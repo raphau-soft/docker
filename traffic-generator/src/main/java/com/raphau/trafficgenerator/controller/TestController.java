@@ -54,9 +54,13 @@ public class TestController {
         List<ClientTestDTO> clientTestDTOList = new ArrayList<>();
         for(int i = 0; i < runTestDTO.getNumberOfUsers(); i++){
             log.info("Register " +  i);
+            Thread.sleep(10);
             asyncService.runTests(""+i, clientTestDTOList, runTestDTO);
         }
-        while(clientTestDTOList.size() < runTestDTO.getNumberOfUsers());
+        while(clientTestDTOList.size() < runTestDTO.getNumberOfUsers()){
+            Thread.sleep(1000);
+        };
+        log.info("Koniec");
         for(ClientTestDTO clientTestDTO: clientTestDTOList){
             for(Map.Entry<String, Integer> entry : clientTestDTO.getNumberOfRequests().entrySet()){
                 Integer number = numberOfRequests.get(entry.getKey());

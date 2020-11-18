@@ -47,9 +47,9 @@ public class TradingThread {
         Test test = new Test();
         test.setName(name);
         try {
-            System.out.println("\n\n\n Trying to acquire semaphore for company " + companyId + "\n\n\n");
+            // System.out.println("\n\n\n Trying to acquire semaphore for company " + companyId + "\n\n\n");
             semaphore.acquire();
-            System.out.println("\n\n\n Acquired semaphore for company " + companyId + "\n\n\n");
+            // System.out.println("\n\n\n Acquired semaphore for company " + companyId + "\n\n\n");
             // flag == true is buyOffer / flag == false is sellOffer
             if(flag){
                 addBuyOffer((BuyOfferDTO) dto);
@@ -66,11 +66,11 @@ public class TradingThread {
             List<Stock> stocks = stockRepository.findByCompany_Id(companyId);
             test.setDatabaseTime(System.currentTimeMillis() - timeDB);
 
-            System.out.println("\n\n\n Amount of buyoffers - " + buyOffers.size() + "\n\n\n");
+            // System.out.println("\n\n\n Amount of buyoffers - " + buyOffers.size() + "\n\n\n");
 
             stocks.forEach(stock -> sellOffers.addAll(stock.getSellOffers()));
             sellOffers.removeIf(sellOffer -> !sellOffer.isActual());
-            System.out.println("\n\n\n Amount of selloffers - " + sellOffers.size() + "\n\n\n");
+            // System.out.println("\n\n\n Amount of selloffers - " + sellOffers.size() + "\n\n\n");
 
             // sort'em
             buyOffers.sort(new SortBuyOffers());

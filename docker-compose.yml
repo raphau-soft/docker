@@ -33,7 +33,7 @@ services:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_ROOT_HOST: '%'
     ports:
-      - "3307:3306"
+      - "3307:3307"
     restart: always
 
   traffic-app:
@@ -49,8 +49,9 @@ services:
     depends_on:
       - traffic-mysql
     restart: on-failure
-#  stock-front:
-#    container_name: stock-front
-#    image: raphau/stock-front:latest
-#    ports:
-#      - 4200:80
+    
+  stock-front:
+    container_name: stock-front
+    image: raphau/stock-front:latest
+    ports:
+      - 4200:80

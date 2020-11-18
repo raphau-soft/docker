@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 
@@ -400,8 +402,8 @@ public class AsyncService {
                 break;
             case RAND_EXPENSIVE_ONE_COMP:
                 // buying stock of one company logic
-                price = Math.random() * 100.f % (user.getMoney()/4.f) * 100;
-                price = Math.round(price)/100.0;
+                price = Math.random() * 100.f % (user.getMoney()/4.f);
+                price = round(price, 2);
                 amount = (int) Math.round(Math.random() * 100.f % (user.getMoney() / price / 2));
                 int companyId = companies.get((int) Math.round(Math.random() * 100.f % (companies.size() - 1))).getId();
                 createBuyOffer(jwt, companyId, amount, price, clientTestDTO);
@@ -411,24 +413,29 @@ public class AsyncService {
                 jsonObject = new JSONObject(getStockRates(jwt, clientTestDTO));
                 Type stockRateListType = new TypeToken<ArrayList<StockRate>>(){}.getType();
                 List<StockRate> stockRates = gson.fromJson(jsonObject.get("stockRate").toString(), stockRateListType);
-                int divider = 0;
-                if(stockRates.size() < 3) divider = 1;
-                else divider = stockRates.size() / 3;
-                int amountOfCompanies = Math.abs(new Random().nextInt() % (divider)) + 1;
+                int amountOfCompanies = Math.abs(new Random().nextInt() % (stockRates.size() / 3)) + 1;
                 for(int i = 0; i < amountOfCompanies; i++){
                     int companyNum = Math.abs(new Random().nextInt() % stockRates.size());
                     StockRate stockRate = stockRates.get(companyNum);
                     Company company = stockRate.getCompany();
                     double rate = stockRate.getRate();
                     // price from 90% to 120% of rate (I think so)
-                    price = Math.round((Math.abs(new Random().nextDouble()) % (rate * 0.3) + rate * 0.9) * 100) / 100.f;
+                    price = round((Math.abs(new Random().nextDouble()) % (rate * 0.3) + rate * 0.9), 2);
                     amount = (int) Math.round(Math.random() * 100.f % (user.getMoney() / price / 10));
-                    log.info("Price: " + price + " Money: " + user.getMoney() + "Amount: " + amount);
+                    log.info("Price: " + price + " Money: " + user.getMoney() + " Amount: " + amount);
                     createBuyOffer(jwt, company.getId(), amount, price, clientTestDTO);
                     stockRates.remove(companyNum);
                 }
                 break;
         }
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     private void strategyAddSellOffer(String jwt, int strategy, ClientTestDTO clientTestDTO) throws JSONException, JsonProcessingException {
@@ -452,8 +459,8 @@ public class AsyncService {
                 // buying stock of one company logic
                 stockNum = Math.abs(new Random().nextInt() % stocks.size());
                 log.info("Sekundy przed katastrofą: " + stockNum + "/" + stocks.size());
-                double price = Math.random() * 100.f % 10000;
-                price = Math.round(price)/100.0;
+                double price = Math.random() % 100.0;
+                price = round(price, 2);
                 int amount = (int) Math.round(Math.random() * 100.f % (stocks.get(stockNum).getAmount())) + 1;
                 log.info("Cena: " + price + " Ilość:" + amount + " Faktyczna ilość: " + stocks.get(stockNum).getAmount());
                 int companyId = stocks.get(stockNum).getCompany().getId();
@@ -477,7 +484,7 @@ public class AsyncService {
                     StockRate stockRate = stockRates.get(stockRateNum);
                     double rate = stockRate.getRate();
                     // price from 80% to 110% of rate (I think so)
-                    price = Math.round((Math.abs(new Random().nextDouble()) % (rate * 0.3) + rate * 0.8)*100)/100.f;
+                    price = round((Math.abs(new Random().nextDouble()) % (rate * 0.3) + rate * 0.8), 2);
                     amount = (int) Math.round(Math.random() * 100.f % (user.getMoney() / price / 10));
                     createSellOffer(jwt, company.getId(), amount, price, clientTestDTO);
                     stocks.remove(stockNum);
