@@ -11,18 +11,23 @@ public class RunTestDTO {
     private double deleteSellOffer;
     private double deleteBuyOffer;
     private double continueStockPlaying;
-    private double logout;
     private double dataCheck;
     private double checkBuyOffers;
     private double checkSellOffers;
     private double checkUserData;
     private double continueDataChecking;
     private int strategy;
+    private long testTime;
+    private int requestsNumber;
 
     public RunTestDTO() {
     }
 
-    public RunTestDTO(long timeBetweenRequests, long numberOfUsers, double stockPlay, double createCompany, double createBuyOffer, double createSellOffer, double deleteSellOffer, double deleteBuyOffer, double continueStockPlaying, double logout, double dataCheck, double checkBuyOffers, double checkSellOffers, double checkUserData, double continueDataChecking, int strategy) {
+    public RunTestDTO(long timeBetweenRequests, long numberOfUsers, double stockPlay, double createCompany,
+                      double createBuyOffer, double createSellOffer, double deleteSellOffer,
+                      double deleteBuyOffer, double continueStockPlaying, double dataCheck,
+                      double checkBuyOffers, double checkSellOffers, double checkUserData,
+                      double continueDataChecking, int strategy, long testTime, int requestsNumber) {
         this.timeBetweenRequests = timeBetweenRequests;
         this.numberOfUsers = numberOfUsers;
         this.stockPlay = stockPlay;
@@ -32,13 +37,30 @@ public class RunTestDTO {
         this.deleteSellOffer = deleteSellOffer;
         this.deleteBuyOffer = deleteBuyOffer;
         this.continueStockPlaying = continueStockPlaying;
-        this.logout = logout;
         this.dataCheck = dataCheck;
         this.checkBuyOffers = checkBuyOffers;
         this.checkSellOffers = checkSellOffers;
         this.checkUserData = checkUserData;
         this.continueDataChecking = continueDataChecking;
         this.strategy = strategy;
+        this.testTime = testTime;
+        this.requestsNumber = requestsNumber;
+    }
+
+    public long getTestTime() {
+        return testTime;
+    }
+
+    public void setTestTime(long testTime) {
+        this.testTime = testTime;
+    }
+
+    public int getRequestsNumber() {
+        return requestsNumber;
+    }
+
+    public void setRequestsNumber(int requestsNumber) {
+        this.requestsNumber = requestsNumber;
     }
 
     public long getTimeBetweenRequests() {
@@ -111,14 +133,6 @@ public class RunTestDTO {
 
     public void setContinueStockPlaying(double continueStockPlaying) {
         this.continueStockPlaying = continueStockPlaying;
-    }
-
-    public double getLogout() {
-        return logout;
-    }
-
-    public void setLogout(double logout) {
-        this.logout = logout;
     }
 
     public double getDataCheck() {

@@ -22,15 +22,11 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(value = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class TestController {
 
     private static Logger log = LoggerFactory.getLogger(TestController.class);
-    private RunTestDTO runTestDTO = new RunTestDTO(20, 50, 0.9, 0.02, 0.44, 0.44, 0.05, 0.05, 0.9, 0.1, 0.1, 0.33, 0.33, 0.34, 0.9, 1);
-    Map<String, Integer> numberOfRequests = new HashMap<>();
-    Map<String, Long> databaseTime = new HashMap<>();
-    Map<String, Long> applicationTime = new HashMap<>();
-    Map<String, Long> apiTime = new HashMap<>();
+    private RunTestDTO runTestDTO = new RunTestDTO(20, 50, 0.9, 0.02, 0.44, 0.44, 0.05, 0.05, 0.9, 0.1, 0.33, 0.33, 0.34, 0.9, 1, 120000, 20);
 
     @Autowired
     private AsyncService asyncService;
@@ -50,17 +46,33 @@ public class TestController {
             throw new Exception();
         }
 
+        Map<String, Integer> numberOfRequests = new HashMap<>();
+        Map<String, Long> databaseTime = new HashMap<>();
+        Map<String, Long> applicationTime = new HashMap<>();
+        Map<String, Long> apiTime = new HashMap<>();
+
         // RunTests
+        asyncService.setEndWork(false);
         List<ClientTestDTO> clientTestDTOList = new ArrayList<>();
         for(int i = 0; i < runTestDTO.getNumberOfUsers(); i++){
             log.info("Register " +  i);
             Thread.sleep(10);
             asyncService.runTests(""+i, clientTestDTOList, runTestDTO);
         }
+        long time = runTestDTO.getTestTime();
         while(clientTestDTOList.size() < runTestDTO.getNumberOfUsers()){
             Thread.sleep(1000);
+            time -= 1000;
+            log.info(time/1000 + "s left");
+            if(time <= 5000){
+                asyncService.setEndWork(true);
+                Thread.sleep(5000);
+                break;
+            }
         };
         log.info("Koniec");
+
+
         for(ClientTestDTO clientTestDTO: clientTestDTOList){
             for(Map.Entry<String, Integer> entry : clientTestDTO.getNumberOfRequests().entrySet()){
                 Integer number = numberOfRequests.get(entry.getKey());
