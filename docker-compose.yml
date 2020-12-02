@@ -62,7 +62,7 @@ services:
     container_name: stock-front
     image: raphau/stock-front:latest
     ports:
-      - "4200:80"
+      - "8083:80"
     networks:
       - app-network
       

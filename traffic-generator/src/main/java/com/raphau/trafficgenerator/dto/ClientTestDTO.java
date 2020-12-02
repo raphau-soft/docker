@@ -70,8 +70,8 @@ public class ClientTestDTO {
 
     public void addTestDetails(String endpoint, TestDetailsDTO testDetailsDTO, long apiTime) {
         Integer number = numberOfRequests.get(endpoint);
-        if(endpoint.equals("user") && number != null)
-            log.info(endpoint + " - ilość zapytań" + (number + 1));
+//        if(endpoint.equals("user") && number != null)
+//            log.info(endpoint + " - ilość zapytań" + (number + 1));
         Long prevSummaryEndpointTime = summaryEndpointTime.get(endpoint);
         Long prevSummaryEndpointDatabaseTime = summaryEndpointDatabaseTime.get(endpoint);
         Long prevSummaryApiTime = summaryApiTime.get(endpoint);
@@ -81,11 +81,11 @@ public class ClientTestDTO {
             summaryEndpointDatabaseTime.put(endpoint, testDetailsDTO.getDatabaseTime());
             summaryApiTime.put(endpoint, apiTime);
         } else {
-            if(endpoint.equals("user"))
-                log.info("Ilość zapytań przed dodaniem - " + numberOfRequests.get(endpoint));
+//            if(endpoint.equals("user"))
+//                log.info("Ilość zapytań przed dodaniem - " + numberOfRequests.get(endpoint));
             numberOfRequests.put(endpoint, ++number);
-            if(endpoint.equals("user"))
-                log.info("Ilość zapytań po dodaniu - " + numberOfRequests.get(endpoint));
+//            if(endpoint.equals("user"))
+//                log.info("Ilość zapytań po dodaniu - " + numberOfRequests.get(endpoint));
             summaryEndpointTime.put(endpoint, testDetailsDTO.getApplicationTime() + prevSummaryEndpointTime);
             summaryEndpointDatabaseTime.put(endpoint, testDetailsDTO.getDatabaseTime() + prevSummaryEndpointDatabaseTime);
             summaryApiTime.put(endpoint, prevSummaryApiTime + apiTime);

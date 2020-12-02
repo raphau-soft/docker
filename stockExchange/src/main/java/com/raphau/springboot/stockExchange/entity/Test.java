@@ -21,14 +21,26 @@ public class Test implements Serializable {
     @Column(name = "application_time")
     private long applicationTime;
 
+    @Column(name = "semaphore_wait_time")
+    private long semaphoreWaitTime;
+
     public Test() {
     }
 
-    public Test(int id, String name, long databaseTime, long applicationTime) {
+    public Test(int id, String name, long databaseTime, long applicationTime, long semaphoreWaitTime) {
         this.id = id;
         this.name = name;
         this.databaseTime = databaseTime;
         this.applicationTime = applicationTime;
+        this.semaphoreWaitTime = semaphoreWaitTime;
+    }
+
+    public long getSemaphoreWaitTime() {
+        return semaphoreWaitTime;
+    }
+
+    public void setSemaphoreWaitTime(long semaphoreWaitTime) {
+        this.semaphoreWaitTime = semaphoreWaitTime;
     }
 
     public String getName() {
@@ -53,6 +65,17 @@ public class Test implements Serializable {
 
     public void setDatabaseTime(long database_time) {
         this.databaseTime = database_time;
+    }
+
+    @Override
+    public String toString() {
+        return "Test{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", databaseTime=" + databaseTime +
+                ", applicationTime=" + applicationTime +
+                ", semaphoreWaitTime=" + semaphoreWaitTime +
+                '}';
     }
 
     public long getApplicationTime() {

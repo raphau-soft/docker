@@ -63,40 +63,35 @@ public class AsyncService {
     }
 
     @Async("asyncExecutor")
-    public void runTests(String username, List<ClientTestDTO> clientTestDTOList, RunTestDTO runTestDTO) throws JSONException, JsonProcessingException, InterruptedException {
-        // try to register users
-        boolean newUser = postRegistration(username);
-        // try to login users
-        UserLogin userLogin = login(username);
-        log.info("Logged in ----> " + userLogin.getUsername());
+    public void runTests(UserLogin userLogin, List<ClientTestDTO> clientTestDTOList,
+                         RunTestDTO runTestDTO) throws JSONException, JsonProcessingException, InterruptedException {
         int requestsNumber = 0;
         ClientTestDTO clientTestDTO = new ClientTestDTO();
-        if(newUser){
-            createCompany(userLogin.getJwt(), clientTestDTO);
-        }
+        createCompany(userLogin.getJwt(), clientTestDTO);
+
         double random = Math.random();
         if (random <= runTestDTO.getStockPlay()) {
             for(;;) {
-                //log.info("Playing on stock - " + username);
+                ////log.info("Playing on stock - " + username);
                 random = Math.random();
                 if (random <= runTestDTO.getCreateCompany()) {
-                    //log.info("Create a company - " + username);
+                    ////log.info("Create a company - " + userLogin.getUsername());
                     createCompany(userLogin.getJwt(), clientTestDTO);
                 } else if (random > runTestDTO.getCreateCompany() && random <= runTestDTO.getCreateSellOffer() + runTestDTO.getCreateCompany()) {
-                    //log.info("Create a sell offer - " + username);
+                    ////log.info("Create a sell offer - " + userLogin.getUsername());
                     strategyAddSellOffer(userLogin.getJwt(), runTestDTO.getStrategy(), clientTestDTO);
                 } else if (random > runTestDTO.getCreateSellOffer() + runTestDTO.getCreateCompany() && random <= runTestDTO.getCreateBuyOffer() + runTestDTO.getCreateCompany() + runTestDTO.getCreateSellOffer()) {
-                    log.info("Create a buy offer - " + username);
+                    ////log.info("Create a buy offer - " + userLogin.getUsername());
                     strategyAddBuyOffer(userLogin.getJwt(), runTestDTO.getStrategy(), clientTestDTO);
                 } else if (random > runTestDTO.getCreateBuyOffer() + runTestDTO.getCreateCompany() + runTestDTO.getCreateSellOffer() && random <= runTestDTO.getCreateBuyOffer() + runTestDTO.getCreateCompany() + runTestDTO.getCreateSellOffer() + runTestDTO.getDeleteSellOffer()) {
-                    //log.info("USUNIECIE OFERTY SPRZEDAZY " + username);
+                    ////log.info("USUNIECIE OFERTY SPRZEDAZY " + userLogin.getUsername());
                     deleteSellOffer(userLogin.getJwt(), clientTestDTO);
                 } else {
-                    //log.info("USUNIECIE OFERTY KUPNA " + username);
+                    ////log.info("USUNIECIE OFERTY KUPNA " + userLogin.getUsername());
                     deleteBuyOffer(userLogin.getJwt(), clientTestDTO);
                 }
                 requestsNumber++;
-                log.info(username + " - ilość zapytań " + requestsNumber);
+                // //log.info(userLogin.getUsername() + " - ilość zapytań " + requestsNumber);
                 if(endWork || requestsNumber >= runTestDTO.getRequestsNumber()){
                     clientTestDTOList.add(clientTestDTO);
                     return;
@@ -105,16 +100,16 @@ public class AsyncService {
             }
         } else {
             for(;;) {
-                //log.info("SPRAWDZANIE DANYCH " + username);
+                ////log.info("SPRAWDZANIE DANYCH " + username);
                 random = Math.random();
                 if(random <= runTestDTO.getDataCheck()){
-                    //log.info("SPRAWDZANIE OFERT KUPNA " + username);
+                    ////log.info("SPRAWDZANIE OFERT KUPNA " + username);
                     getBuyOffers(userLogin.getJwt(), clientTestDTO);
                 } else if(random > runTestDTO.getCheckBuyOffers() && random <= runTestDTO.getCheckBuyOffers() + runTestDTO.getCheckSellOffers()){
-                    //log.info("SPRAWDZANIE OFERT SPRZEDAZY " + username);
+                    ////log.info("SPRAWDZANIE OFERT SPRZEDAZY " + username);
                     getSellOffers(userLogin.getJwt(), clientTestDTO);
                 } else {
-                    //log.info("SPRAWDZANIE SWOICH DANYCH " + username);
+                    ////log.info("SPRAWDZANIE SWOICH DANYCH " + username);
                     getUser(userLogin.getJwt(), clientTestDTO);
                 }
                 requestsNumber++;
@@ -167,8 +162,8 @@ public class AsyncService {
         clientTestDTO.addTestDetails(USER_BUYOFFERS_D, testDetailsDTO, apiTime);
     }
 
-    private boolean postRegistration(String username) throws JSONException {
-        log.info("Registration " + username + " starts");
+    public boolean postRegistration(String username) throws JSONException {
+        ////log.info("Registration " + username + " starts");
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         JSONObject personJsonObject;
@@ -183,17 +178,17 @@ public class AsyncService {
         String message = "";
         try {
             message = restTemplate.postForObject(this.api + "api/auth/signup", request, String.class);
-            log.info(message);
-            log.info("Registration " + username + " ends");
+            ////log.info(message);
+            ////log.info("Registration " + username + " ends");
             return true;
         } catch (Exception e){
-            log.info("Error  registration" + username);
+            ////log.info("Error  registration" + username);
             return false;
         }
     }
 
     public UserLogin login(String username) throws JSONException {
-        log.info("Login " + username + " starts");
+        ////log.info("Login " + username + " starts");
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         JSONObject personJsonObject;
@@ -204,9 +199,9 @@ public class AsyncService {
         UserLogin userLogin = null;
         try {
             userLogin = restTemplate.postForObject(this.api + "api/auth/signin", request, UserLogin.class);
-            log.info("Login " + username + " ends");
+            ////log.info("Login " + username + " ends");
         } catch (Exception e){
-            log.info("Error login " + username);
+            ////log.info("Error login " + username);
         }
         return userLogin;
     }
@@ -225,7 +220,7 @@ public class AsyncService {
             jsonResponse = restTemplate.exchange(
                     this.api + "api/user", HttpMethod.GET, entity, String.class, new Object());
         } catch (Exception e){
-            log.info("Error " + e);
+            ////log.info("Error " + e);
         }
         apiTime = System.currentTimeMillis() - apiTime;
         assert jsonResponse != null;
@@ -249,7 +244,7 @@ public class AsyncService {
             jsonResponse = restTemplate.exchange(
                     this.api + "api/user/buyOffers", HttpMethod.GET, entity, String.class, new Object());
         } catch (Exception e){
-            log.info("Error " + e);
+            ////log.info("Error " + e);
         }
         apiTime = System.currentTimeMillis() - apiTime;
         assert jsonResponse != null;
@@ -273,7 +268,7 @@ public class AsyncService {
             jsonResponse = restTemplate.exchange(
                     this.api + "api/user/sellOffers", HttpMethod.GET, entity, String.class, new Object());
         } catch (Exception e){
-            log.info("Error " + e);
+            ////log.info("Error " + e);
         }
         apiTime = System.currentTimeMillis() - apiTime;
         assert jsonResponse != null;
@@ -297,7 +292,7 @@ public class AsyncService {
             jsonResponse = restTemplate.exchange(
                     this.api + "api/user/resources", HttpMethod.GET, entity, String.class, new Object());
         } catch (Exception e){
-            log.info("Error " + e);
+            //log.info("Error " + e);
         }
         apiTime = System.currentTimeMillis() - apiTime;
         String response = null;
@@ -324,7 +319,7 @@ public class AsyncService {
             jsonResponse = restTemplate.exchange(
                     this.api + "stockRates", HttpMethod.GET, entity, String.class, new Object());
         } catch (Exception e){
-            log.info("Error " + e);
+            //log.info("Error " + e);
         }
         apiTime = System.currentTimeMillis() - apiTime;
         if(jsonResponse == null) return null;
@@ -365,11 +360,11 @@ public class AsyncService {
         try {
             testDetailsDTO = restTemplate.postForObject(this.api + "company", request, TestDetailsDTO.class);
         } catch (Exception e){
-            log.info("Error " + e);
+            //log.info("Error " + e);
         }
         apiTime = System.currentTimeMillis() - apiTime;
         assert testDetailsDTO != null;
-        log.info(testDetailsDTO.toString());
+        //log.info(testDetailsDTO.toString());
         clientTestDTO.addTestDetails(COMPANY, testDetailsDTO, apiTime);
     }
 
@@ -387,7 +382,7 @@ public class AsyncService {
             jsonResponse = restTemplate.exchange(
                     this.api + "companies", HttpMethod.GET, entity, String.class, new Object());
         } catch (Exception e){
-            log.info("Error " + e);
+            //log.info("Error " + e);
         }
         apiTime = System.currentTimeMillis() - apiTime;
         assert jsonResponse != null;
@@ -434,7 +429,7 @@ public class AsyncService {
                     // price from 90% to 120% of rate (I think so)
                     price = round((Math.abs(new Random().nextDouble()) % (rate * 0.3) + rate * 0.9), 2);
                     amount = (int) Math.round(Math.random() * 100.f % (user.getMoney() / price / 10));
-                    //log.info("Price: " + price + " Money: " + user.getMoney() + " Amount: " + amount);
+                    ////log.info("Price: " + price + " Money: " + user.getMoney() + " Amount: " + amount);
                     createBuyOffer(jwt, company.getId(), amount, price, clientTestDTO);
                     stockRates.remove(companyNum);
                 }
@@ -454,11 +449,11 @@ public class AsyncService {
         Gson gson = new Gson();
         JSONObject jsonObject = new JSONObject(getUser(jwt, clientTestDTO));
         User user = gson.fromJson(jsonObject.get("user").toString(), User.class);
-        //log.info("@@@@@@@ RESOURCES: " + getResources(jwt));
+        ////log.info("@@@@@@@ RESOURCES: " + getResources(jwt));
         String resources = getResources(jwt, clientTestDTO);
         if(resources == null) return;
         jsonObject = new JSONObject(resources);
-        //log.info("Resources: " + resources);
+        ////log.info("Resources: " + resources);
         Type stockListType = new TypeToken<ArrayList<Stock>>(){}.getType();
         List<Stock> stocks = gson.fromJson(jsonObject.get("stock").toString(), stockListType);
         if(stocks.size() <= 0) return;
@@ -470,11 +465,11 @@ public class AsyncService {
             case RAND_EXPENSIVE_ONE_COMP:
                 // buying stock of one company logic
                 stockNum = Math.abs(new Random().nextInt() % stocks.size());
-                //log.info("Sekundy przed katastrofą: " + stockNum + "/" + stocks.size());
+                ////log.info("Sekundy przed katastrofą: " + stockNum + "/" + stocks.size());
                 double price = Math.random() % 100.0;
                 price = round(price, 2);
                 int amount = (int) Math.round(Math.random() * 100.f % (stocks.get(stockNum).getAmount())) + 1;
-                //log.info("Cena: " + price + " Ilość:" + amount + " Faktyczna ilość: " + stocks.get(stockNum).getAmount());
+                ////log.info("Cena: " + price + " Ilość:" + amount + " Faktyczna ilość: " + stocks.get(stockNum).getAmount());
                 int companyId = stocks.get(stockNum).getCompany().getId();
                 createSellOffer(jwt, companyId, amount, price, clientTestDTO);
                 break;
@@ -488,13 +483,13 @@ public class AsyncService {
                 int amountOfStocks = Math.abs(new Random().nextInt() % stocks.size())/3 + 1;
                 for(int i = 0; i < amountOfStocks; i++){
                     stockNum = Math.abs(new Random().nextInt() % stocks.size());
-                    // log.info("Stocks size: " + stocks.size() + " stockNum: " + stockNum);
+                    // //log.info("Stocks size: " + stocks.size() + " stockNum: " + stockNum);
                     Stock stock = stocks.get(stockNum);
                     Company company = stock.getCompany();
                     StockRate stockRateTemp = new StockRate();
                     stockRateTemp.setCompany(company);
                     int stockRateNum = stockRates.indexOf(stockRateTemp);
-                    //log.info("StocksRate size: " + stockRates.size() + " stockRateNum: " + stockRateNum);
+                    ////log.info("StocksRate size: " + stockRates.size() + " stockRateNum: " + stockRateNum);
                     StockRate stockRate = stockRates.get(stockRateNum);
                     double rate = stockRate.getRate();
                     // price from 80% to 110% of rate (I think so)
@@ -519,13 +514,13 @@ public class AsyncService {
         companyJsonObject.put("amount", amount);
         companyJsonObject.put("dateLimit", "2014-05-09T00:48:16-04:00");
         HttpEntity<String> request = new HttpEntity<>(companyJsonObject.toString(), headers);
-        //log.info("CREATING A BUY OFFER");
+        ////log.info("CREATING A BUY OFFER");
         TestDetailsDTO testDetailsDTO = null;
         long apiTime = System.currentTimeMillis();
         try {
             testDetailsDTO = restTemplate.postForObject( this.api + "api/buyOffer", request, TestDetailsDTO.class);
         } catch (Exception e){
-            // log.info("Error " + e);
+            // //log.info("Error " + e);
         }
         apiTime = System.currentTimeMillis() - apiTime;
         if(testDetailsDTO !=null)
@@ -543,14 +538,15 @@ public class AsyncService {
         companyJsonObject.put("minPrice", price);
         companyJsonObject.put("amount", amount);
         companyJsonObject.put("dateLimit", "2014-05-09T00:48:16-04:00");
+        //log.info(companyJsonObject.toString());
         HttpEntity<String> request = new HttpEntity<>(companyJsonObject.toString(), headers);
-        //log.info("CREATING A SELL OFFER");
+        ////log.info("CREATING A SELL OFFER");
         TestDetailsDTO testDetailsDTO = null;
         long apiTime = System.currentTimeMillis();
         try {
             testDetailsDTO = restTemplate.postForObject(this.api + "api/sellOffer", request, TestDetailsDTO.class);
         } catch (Exception e){
-            log.info("Error " + e);
+            //log.info("Error " + e);
         }
         apiTime = System.currentTimeMillis() - apiTime;
         if(testDetailsDTO != null)

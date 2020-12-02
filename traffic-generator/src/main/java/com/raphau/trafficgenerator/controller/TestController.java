@@ -28,6 +28,7 @@ public class TestController {
     private static Logger log = LoggerFactory.getLogger(TestController.class);
     private RunTestDTO runTestDTO = new RunTestDTO(20, 50, 0.9, 0.02, 0.44, 0.44, 0.05, 0.05, 0.9, 0.1, 0.33, 0.33, 0.34, 0.9, 1, 120000, 20);
 
+
     @Autowired
     private AsyncService asyncService;
 
@@ -50,14 +51,21 @@ public class TestController {
         Map<String, Long> databaseTime = new HashMap<>();
         Map<String, Long> applicationTime = new HashMap<>();
         Map<String, Long> apiTime = new HashMap<>();
+        List<UserLogin> userLogins = new ArrayList<>();
 
         // RunTests
         asyncService.setEndWork(false);
         List<ClientTestDTO> clientTestDTOList = new ArrayList<>();
+
+        for(int i = 0; i < runTestDTO.getNumberOfUsers(); i++){
+            boolean temp = asyncService.postRegistration(""+i);
+            userLogins.add(asyncService.login(""+i));
+        }
+
         for(int i = 0; i < runTestDTO.getNumberOfUsers(); i++){
             log.info("Register " +  i);
             Thread.sleep(10);
-            asyncService.runTests(""+i, clientTestDTOList, runTestDTO);
+            asyncService.runTests(userLogins.get(i), clientTestDTOList, runTestDTO);
         }
         long time = runTestDTO.getTestTime();
         while(clientTestDTOList.size() < runTestDTO.getNumberOfUsers()){

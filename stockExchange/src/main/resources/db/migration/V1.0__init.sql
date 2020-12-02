@@ -80,6 +80,7 @@ CREATE TABLE IF NOT EXISTS `test`(
     `name` varchar(45) NOT NULL,
     `database_time` bigint(45) NOT NULL,
     `application_time` bigint(45) NOT NULL,
+    `semaphore_wait_time` bigint(45) NOT NULL,
     PRIMARY KEY(`id`)
 );
 

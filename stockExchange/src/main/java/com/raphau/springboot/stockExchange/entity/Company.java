@@ -56,4 +56,15 @@ public class Company implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "Company{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", buyOffers=" + buyOffers +
+                ", stocks=" + stocks +
+                ", stock_rates=" + stock_rates +
+                '}';
+    }
 }
