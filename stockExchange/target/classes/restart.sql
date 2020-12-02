@@ -91,3 +91,4 @@ TRUNCATE stock;
 TRUNCATE sell_offer;
 TRUNCATE buy_offer;
 TRUNCATE company;
+SET FOREIGN_KEY_CHECKS = 1;

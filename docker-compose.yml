@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3'
 services:
   stock-mysql:
     container_name: stock-mysql
@@ -10,6 +10,8 @@ services:
     ports:
       - "3306:3306"
     restart: always
+    networks:
+      - app-network
 
   stock-app:
     container_name: stock-back
@@ -19,11 +21,13 @@ services:
       - ~/.m2:/root/.m2
     working_dir: /app
     ports:
-      - 8080:8080
+      - "8080:8080"
     command: mvn clean spring-boot:run
     depends_on:
       - stock-mysql
     restart: on-failure
+    networks:
+      - app-network
 
   traffic-mysql:
     container_name: traffic-mysql
@@ -35,6 +39,8 @@ services:
     ports:
       - "3307:3307"
     restart: always
+    networks:
+      - app-network
 
   traffic-app:
     container_name: traffic-back
@@ -44,14 +50,22 @@ services:
       - ~/.m2:/root/.m2
     working_dir: /app
     ports:
-      - 8081:8080
+      - "8081:8080"
     command: mvn clean spring-boot:run
     depends_on:
       - traffic-mysql
     restart: on-failure
+    networks:
+      - app-network
     
   stock-front:
     container_name: stock-front
     image: raphau/stock-front:latest
     ports:
-      - 4200:80
+      - "4200:80"
+    networks:
+      - app-network
+      
+networks:
+  app-network:
+    driver: bridge

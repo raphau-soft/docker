@@ -7,8 +7,11 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.web.bind.annotation.*;
+import java.lang.reflect.Method;
 
 import javax.sql.DataSource;
+import java.lang.management.*;
+import java.lang.reflect.Modifier;
 
 @RestController
 @CrossOrigin(origins="*", maxAge = 3600)
@@ -43,8 +46,62 @@ public class TestController {
     public void restartDB(){
         ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator(false, false, "UTF-8", new ClassPathResource("restart.sql"));
         resourceDatabasePopulator.execute(dataSource);
-        resourceDatabasePopulator = new ResourceDatabasePopulator(false, false, "UTF-8", new ClassPathResource("reinsert.sql"));
-        resourceDatabasePopulator.execute(dataSource);
+    }
+
+    @GetMapping("/statistics")
+    public void getStats(){
+        MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+        System.out.println(String.format("Initial memory: %.2f GB",
+                (double)memoryMXBean.getHeapMemoryUsage().getInit() /1073741824));
+        System.out.println(String.format("Used heap memory: %.2f GB",
+                (double)memoryMXBean.getHeapMemoryUsage().getUsed() /1073741824));
+        System.out.println(String.format("Max heap memory: %.2f GB",
+                (double)memoryMXBean.getHeapMemoryUsage().getMax() /1073741824));
+        System.out.println(String.format("Committed memory: %.2f GB",
+                (double)memoryMXBean.getHeapMemoryUsage().getCommitted() /1073741824));
+
+
+            OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
+            for (Method method : operatingSystemMXBean.getClass().getDeclaredMethods()) {
+                method.setAccessible(true);
+                if (method.getName().startsWith("get")
+                        && Modifier.isPublic(method.getModifiers())) {
+                    Object value;
+                    try {
+                        value = method.invoke(operatingSystemMXBean);
+                    } catch (Exception e) {
+                        value = e;
+                    }
+                    System.out.println(method.getName() + " = " + value);
+                }
+            }
+
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

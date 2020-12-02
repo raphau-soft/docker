@@ -65,12 +65,15 @@ public class AsyncService {
     @Async("asyncExecutor")
     public void runTests(String username, List<ClientTestDTO> clientTestDTOList, RunTestDTO runTestDTO) throws JSONException, JsonProcessingException, InterruptedException {
         // try to register users
-        postRegistration(username);
+        boolean newUser = postRegistration(username);
         // try to login users
         UserLogin userLogin = login(username);
         log.info("Logged in ----> " + userLogin.getUsername());
         int requestsNumber = 0;
         ClientTestDTO clientTestDTO = new ClientTestDTO();
+        if(newUser){
+            createCompany(userLogin.getJwt(), clientTestDTO);
+        }
         double random = Math.random();
         if (random <= runTestDTO.getStockPlay()) {
             for(;;) {
@@ -164,7 +167,7 @@ public class AsyncService {
         clientTestDTO.addTestDetails(USER_BUYOFFERS_D, testDetailsDTO, apiTime);
     }
 
-    private void postRegistration(String username) throws JSONException {
+    private boolean postRegistration(String username) throws JSONException {
         log.info("Registration " + username + " starts");
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -182,8 +185,10 @@ public class AsyncService {
             message = restTemplate.postForObject(this.api + "api/auth/signup", request, String.class);
             log.info(message);
             log.info("Registration " + username + " ends");
+            return true;
         } catch (Exception e){
             log.info("Error  registration" + username);
+            return false;
         }
     }
 
