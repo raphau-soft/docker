@@ -82,28 +82,31 @@ public class TradingThread {
             sellOffers.sort(new SortSellOffers());
             List<Transaction> transactions = new ArrayList<>();
             // trade with three variants (more stocks on sell/buy offer, or even)
-            long transactionTime = System.currentTimeMillis();
+            test.setApplicationTime(0);
+            int i = 0;
             while(buyOffers.size() >= OFFERS_NUMBER
                     && sellOffers.size() >= OFFERS_NUMBER){
+                i++;
                 if(!startTrading(buyOffers.subList(0, OFFERS_NUMBER),
-                        sellOffers.subList(0, OFFERS_NUMBER), transactions, test))
+                        sellOffers.subList(0, OFFERS_NUMBER), transactions, test)){
                     break;
+                }
                 sellOffers.removeIf(sellOffer -> !sellOffer.isActual());
                 buyOffers.removeIf(buyOffer -> !buyOffer.isActual());
             }
-            test.setApplicationTime(System.currentTimeMillis() - transactionTime);
-
             // update stock rate
-            if(!transactions.isEmpty())
+            if(!transactions.isEmpty()) {
+                log.info("Saving test " + test.toString());
+                test.setApplicationTime(test.getApplicationTime()/i);
+                testRepository.save(test);
                 updateStockRates(companyId, transactions, test);
+            }
 
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
             semaphore.release();
         }
-        log.info("Saving test in run " + test.toString());
-        testRepository.save(test);
     }
 
 
@@ -131,9 +134,9 @@ public class TradingThread {
         BuyOffer buyOffer = new BuyOffer(0, company, user,
                 buyOfferDTO.getMaxPrice(), buyOfferDTO.getAmount(), buyOfferDTO.getAmount(), buyOfferDTO.getDateLimit(), true);
         user.setMoney(user.getMoney().subtract(buyOfferDTO.getMaxPrice().multiply(BigDecimal.valueOf(buyOfferDTO.getAmount()))));
-        log.info("Saving user in addBuyOffer " + user.toString());
+        //log.info("Saving user in addBuyOffer " + user.toString());
         userRepository.save(user);
-        log.info("Saving buyOffer in addBuyOffer " + buyOffer.toString());
+        //log.info("Saving buyOffer in addBuyOffer " + buyOffer.toString());
         buyOfferRepository.save(buyOffer);
     }
 
@@ -161,9 +164,9 @@ public class TradingThread {
         }
         stock.setAmount(stock.getAmount() - sellOfferDTO.getAmount());
         SellOffer sellOffer = new SellOffer(sellOfferDTO, stock);
-        log.info("Saving stock in addSellOffer " + stock.toString());
+        //log.info("Saving stock in addSellOffer " + stock.toString());
         stockRepository.save(stock);
-        log.info("Saving sellOffer in addSellOffer " + sellOffer.toString());
+        //log.info("Saving sellOffer in addSellOffer " + sellOffer.toString());
         sellOfferRepository.save(sellOffer);
     }
 
@@ -196,9 +199,9 @@ public class TradingThread {
             StockRate newStockRate = new StockRate(0, stockRate.getCompany(), newPrice, new Date(), true);
             stockRate.setActual(false);
             timeDB = System.currentTimeMillis();
-            log.info("Saving stockRate in updateStockRates " + stockRate.toString());
+            //log.info("Saving stockRate in updateStockRates " + stockRate.toString());
             stockRateRepository.save(stockRate);
-            log.info("Saving newStockRate in updateStockRate " + newStockRate.toString());
+            //log.info("Saving newStockRate in updateStockRate " + newStockRate.toString());
             stockRateRepository.save(newStockRate);
             test.setDatabaseTime(test.getDatabaseTime() + System.currentTimeMillis() - timeDB);
         }
@@ -209,6 +212,7 @@ public class TradingThread {
                                  List<SellOffer> sellOffers,
                                  List<Transaction> transactions,
                                  Test test) {
+        long appTime = System.currentTimeMillis();
         BuyOffer buyOffer;
         SellOffer sellOffer;
         int i=0,j=0;
@@ -228,6 +232,7 @@ public class TradingThread {
                 i++;j++;
             }
         }
+        test.setApplicationTime(System.currentTimeMillis() - appTime);
         return true;
     }
 
@@ -273,13 +278,13 @@ public class TradingThread {
         sellOffer.setAmount(0);
         sellOffer.setActual(false);
         timeDB = System.currentTimeMillis();
-        log.info("Saving stock in noneOfferStay " + stock.toString());
+        //log.info("Saving stock in noneOfferStay " + stock.toString());
         stockRepository.save(stock);
-        log.info("Saving transaction in noneOfferStay " + transaction.toString());
+        //log.info("Saving transaction in noneOfferStay " + transaction.toString());
         transactionRepository.save(transaction);
-        log.info("Saving buyOffer in noneOfferStay " + buyOffer.toString());
+        //log.info("Saving buyOffer in noneOfferStay " + buyOffer.toString());
         buyOfferRepository.save(buyOffer);
-        log.info("Saving sellOffer in noneOfferStay " + sellOffer.toString());
+        //log.info("Saving sellOffer in noneOfferStay " + sellOffer.toString());
         sellOfferRepository.save(sellOffer);
         test.setDatabaseTime(test.getDatabaseTime() + System.currentTimeMillis() - timeDB);
         return transaction;
@@ -307,13 +312,13 @@ public class TradingThread {
         sellOffer.setAmount(0);
         sellOffer.setActual(false);
         timeDB = System.currentTimeMillis();
-        log.info("Saving stock in buyOfferStay " + stock.toString());
+        //log.info("Saving stock in buyOfferStay " + stock.toString());
         stockRepository.save(stock);
-        log.info("Saving transaction in buyOfferStay " + transaction.toString());
+        //log.info("Saving transaction in buyOfferStay " + transaction.toString());
         transactionRepository.save(transaction);
-        log.info("Saving buyOffer in buyOfferStay " + buyOffer.toString());
+        //log.info("Saving buyOffer in buyOfferStay " + buyOffer.toString());
         buyOfferRepository.save(buyOffer);
-        log.info("Saving sellOffer in buyOfferStay " + sellOffer.toString());
+        //log.info("Saving sellOffer in buyOfferStay " + sellOffer.toString());
         sellOfferRepository.save(sellOffer);
         test.setDatabaseTime(test.getDatabaseTime() + System.currentTimeMillis() - timeDB);
         return transaction;
@@ -340,13 +345,13 @@ public class TradingThread {
         buyOffer.setAmount(0);
         buyOffer.setActual(false);
         timeDB = System.currentTimeMillis();
-        log.info("Saving stock in sellOfferStay " + stock.toString());
+        //log.info("Saving stock in sellOfferStay " + stock.toString());
         stockRepository.save(stock);
-        log.info("Saving transaction in sellOfferStay " + transaction.toString());
+        //log.info("Saving transaction in sellOfferStay " + transaction.toString());
         transactionRepository.save(transaction);
-        log.info("Saving sellOffer in sellOfferStay " + sellOffer.toString());
+        //log.info("Saving sellOffer in sellOfferStay " + sellOffer.toString());
         sellOfferRepository.save(sellOffer);
-        log.info("Saving buyOffer in sellOfferStay " + buyOffer.toString());
+        //log.info("Saving buyOffer in sellOfferStay " + buyOffer.toString());
         buyOfferRepository.save(buyOffer);
         test.setDatabaseTime(test.getDatabaseTime() + System.currentTimeMillis() - timeDB);
         return transaction;
