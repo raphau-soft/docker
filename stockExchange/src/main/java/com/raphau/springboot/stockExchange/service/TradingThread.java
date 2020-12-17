@@ -175,7 +175,10 @@ public class TradingThread {
         stock.setAmount(stock.getAmount() - sellOfferDTO.getAmount());
         SellOffer sellOffer = new SellOffer(sellOfferDTO, stock);
         //log.info("Saving stock in addSellOffer " + stock.toString());
-        stockRepository.save(stock);
+        if(stock.getAmount() == 0)
+            stockRepository.delete(stock);
+        else
+            stockRepository.save(stock);
         //log.info("Saving sellOffer in addSellOffer " + sellOffer.toString());
         sellOfferRepository.save(sellOffer);
     }

@@ -407,6 +407,7 @@ public class AsyncService {
                 price = Math.random() * 100.f % (user.getMoney()/4.f);
                 price = round(price, 2);
                 amount = (int) Math.round(Math.random() * 100.f % (user.getMoney() / price / 2));
+                if(amount == 0) amount = 1;
                 int companyId = companies.get((int) Math.round(Math.random() * 100.f % (companies.size() - 1))).getId();
                 createBuyOffer(jwt, companyId, amount, price, clientTestDTO);
                 break;
@@ -467,6 +468,7 @@ public class AsyncService {
                 double price = Math.random() % 100.0;
                 price = round(price, 2);
                 int amount = (int) Math.round(Math.random() * 100.f % (stocks.get(stockNum).getAmount())) + 1;
+                if(amount == 0) amount = 1;
                 ////log.info("Cena: " + price + " Ilość:" + amount + " Faktyczna ilość: " + stocks.get(stockNum).getAmount());
                 int companyId = stocks.get(stockNum).getCompany().getId();
                 createSellOffer(jwt, companyId, amount, price, clientTestDTO);
@@ -492,7 +494,8 @@ public class AsyncService {
                     double rate = stockRate.getRate();
                     // price from 80% to 110% of rate (I think so)
                     price = round((Math.abs(new Random().nextDouble()) % (rate * 0.3) + rate * 0.8), 2);
-                    amount = (int) Math.round(Math.random() * 100.f % (stocks.get(stockNum).getAmount())) + 1;
+                    amount = (int) Math.round(Math.random() * 100.f % (stocks.get(stockNum).getAmount()));
+                    if(amount == 0) amount = 1;
                     createSellOffer(jwt, company.getId(), amount, price, clientTestDTO);
                     stocks.remove(stockNum);
                 }
