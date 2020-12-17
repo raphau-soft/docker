@@ -133,12 +133,13 @@ public class TradingThread {
         if(user.getMoney().compareTo(buyOfferDTO.getMaxPrice()
                 .multiply(BigDecimal.valueOf(buyOfferDTO.getAmount()))) < 0
                 || buyOfferDTO.getAmount() <= 0){
-            throw new NotEnoughMoneyException("Not enough money (Amount is "
-                    + buyOfferDTO.getAmount() + "). You have "
-                    + user.getMoney().toString() + " " +
-                    "but you need " + buyOfferDTO.getMaxPrice().
-                    multiply(BigDecimal.valueOf(buyOfferDTO.getAmount()))
-                    .toString());
+//            throw new NotEnoughMoneyException("Not enough money (Amount is "
+//                    + buyOfferDTO.getAmount() + "). You have "
+//                    + user.getMoney().toString() + " " +
+//                    "but you need " + buyOfferDTO.getMaxPrice().
+//                    multiply(BigDecimal.valueOf(buyOfferDTO.getAmount()))
+//                    .toString());
+            return;
         }
         BuyOffer buyOffer = new BuyOffer(0, company, user,
                 buyOfferDTO.getMaxPrice(), buyOfferDTO.getAmount(),
