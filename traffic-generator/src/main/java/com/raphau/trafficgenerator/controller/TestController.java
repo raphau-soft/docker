@@ -36,7 +36,7 @@ import java.util.Map;
 public class TestController {
 
     private static Logger log = LoggerFactory.getLogger(TestController.class);
-    private RunTestDTO runTestDTO = new RunTestDTO(20, 50, 0.9, 0.44, 0.44, 0.05, 0.05, 0.1, 0.33, 0.33, 0.34, 1, 120000, 20);
+    private RunTestDTO runTestDTO = new RunTestDTO(20, 50, 0.9, 0.45, 0.45, 0.05, 0.05, 0.1, 0.33, 0.33, 0.34, 1, 120000, 20);
     private final OperatingSystemMXBean  bean = (com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 
     @Autowired
