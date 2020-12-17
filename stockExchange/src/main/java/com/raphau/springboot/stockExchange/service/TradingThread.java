@@ -175,8 +175,10 @@ public class TradingThread {
         stock.setAmount(stock.getAmount() - sellOfferDTO.getAmount());
         SellOffer sellOffer = new SellOffer(sellOfferDTO, stock);
         //log.info("Saving stock in addSellOffer " + stock.toString());
-        if(stock.getAmount() == 0)
+        if(stock.getAmount() == 0) {
+            log.info("Deleting stock");
             stockRepository.delete(stock);
+        }
         else
             stockRepository.save(stock);
         //log.info("Saving sellOffer in addSellOffer " + sellOffer.toString());
@@ -317,7 +319,6 @@ public class TradingThread {
         sellOffer.setAmount(0);
         sellOffer.setActual(false);
         timeDB = System.currentTimeMillis();
-        log.info(stock.getAmount() + "none");
         stockRepository.save(stock);
         transactionRepository.save(transaction);
         buyOfferRepository.save(buyOffer);
@@ -351,7 +352,6 @@ public class TradingThread {
         timeDB = System.currentTimeMillis();
         //log.info("Saving stock in buyOfferStay " + stock.toString());
         stockRepository.save(stock);
-        log.info(stock.getAmount() + "buyOffer");
         //log.info("Saving transaction in buyOfferStay " + transaction.toString());
         transactionRepository.save(transaction);
         //log.info("Saving buyOffer in buyOfferStay " + buyOffer.toString());
@@ -379,7 +379,6 @@ public class TradingThread {
             stock = stockOptional.get();
             stock.setAmount(stock.getAmount() + buyOffer.getAmount());
         }
-        log.info(stock.getAmount() + "sellOffer");
         sellOffer.setAmount(sellOffer.getAmount() - buyOffer.getAmount());
         buyOffer.setAmount(0);
         buyOffer.setActual(false);
