@@ -345,7 +345,7 @@ public class AsyncService {
         }
         String name = sb.toString();
         // Generate stock amount/price
-        int amount = Math.abs(new Random().nextInt() % 1500);
+        int amount = Math.abs(new Random().nextInt() % 1500) + 50;
         double price = Math.round(new Random().nextDouble() * 10000) / 100.0;
         companyJsonObject.put("name", name);
         companyJsonObject.put("amount", amount);

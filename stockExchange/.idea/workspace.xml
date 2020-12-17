@@ -24,14 +24,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e28b238c-1083-4e88-844f-624a630c7d70" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/raphau/springboot/stockExchange/service/TradingThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/raphau/springboot/stockExchange/service/TradingThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/raphau/springboot/stockExchange/service/TradingThread$SortBuyOffers.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/raphau/springboot/stockExchange/service/TradingThread$SortBuyOffers.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/raphau/springboot/stockExchange/service/TradingThread$SortSellOffers.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/raphau/springboot/stockExchange/service/TradingThread$SortSellOffers.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/raphau/springboot/stockExchange/service/TradingThread.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/raphau/springboot/stockExchange/service/TradingThread.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/stockexchange-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/stockexchange-0.0.1-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/stockexchange-0.0.1-SNAPSHOT.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/target/stockexchange-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
-    </list>
+    <list default="true" id="e28b238c-1083-4e88-844f-624a630c7d70" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -297,6 +290,7 @@
       <workItem from="1608210086479" duration="1210000" />
       <workItem from="1608212779681" duration="300000" />
       <workItem from="1608213391338" duration="75000" />
+      <workItem from="1608213881365" duration="24000" />
     </task>
     <servers />
   </component>
