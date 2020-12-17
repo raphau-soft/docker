@@ -74,16 +74,13 @@ public class AsyncService {
             for(;;) {
                 ////log.info("Playing on stock - " + username);
                 random = Math.random();
-                if (random <= runTestDTO.getCreateCompany()) {
-                    ////log.info("Create a company - " + userLogin.getUsername());
-                    createCompany(userLogin.getJwt(), clientTestDTO);
-                } else if (random > runTestDTO.getCreateCompany() && random <= runTestDTO.getCreateSellOffer() + runTestDTO.getCreateCompany()) {
+                if (random <= runTestDTO.getCreateSellOffer()) {
                     ////log.info("Create a sell offer - " + userLogin.getUsername());
                     strategyAddSellOffer(userLogin.getJwt(), runTestDTO.getStrategy(), clientTestDTO);
-                } else if (random > runTestDTO.getCreateSellOffer() + runTestDTO.getCreateCompany() && random <= runTestDTO.getCreateBuyOffer() + runTestDTO.getCreateCompany() + runTestDTO.getCreateSellOffer()) {
+                } else if (random > runTestDTO.getCreateSellOffer()&& random <= runTestDTO.getCreateBuyOffer() + runTestDTO.getCreateSellOffer()) {
                     ////log.info("Create a buy offer - " + userLogin.getUsername());
                     strategyAddBuyOffer(userLogin.getJwt(), runTestDTO.getStrategy(), clientTestDTO);
-                } else if (random > runTestDTO.getCreateBuyOffer() + runTestDTO.getCreateCompany() + runTestDTO.getCreateSellOffer() && random <= runTestDTO.getCreateBuyOffer() + runTestDTO.getCreateCompany() + runTestDTO.getCreateSellOffer() + runTestDTO.getDeleteSellOffer()) {
+                } else if (random > runTestDTO.getCreateBuyOffer() + runTestDTO.getCreateSellOffer() && random <= runTestDTO.getCreateBuyOffer() + runTestDTO.getCreateSellOffer() + runTestDTO.getDeleteSellOffer()) {
                     ////log.info("USUNIECIE OFERTY SPRZEDAZY " + userLogin.getUsername());
                     deleteSellOffer(userLogin.getJwt(), clientTestDTO);
                 } else {

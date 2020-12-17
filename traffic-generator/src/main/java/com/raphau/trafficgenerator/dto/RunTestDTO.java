@@ -5,17 +5,14 @@ public class RunTestDTO {
     private long timeBetweenRequests;
     private long numberOfUsers;
     private double stockPlay;
-    private double createCompany;
     private double createBuyOffer;
     private double createSellOffer;
     private double deleteSellOffer;
     private double deleteBuyOffer;
-    private double continueStockPlaying;
     private double dataCheck;
     private double checkBuyOffers;
     private double checkSellOffers;
     private double checkUserData;
-    private double continueDataChecking;
     private int strategy;
     private long testTime;
     private int requestsNumber;
@@ -23,25 +20,22 @@ public class RunTestDTO {
     public RunTestDTO() {
     }
 
-    public RunTestDTO(long timeBetweenRequests, long numberOfUsers, double stockPlay, double createCompany,
+    public RunTestDTO(long timeBetweenRequests, long numberOfUsers, double stockPlay,
                       double createBuyOffer, double createSellOffer, double deleteSellOffer,
-                      double deleteBuyOffer, double continueStockPlaying, double dataCheck,
+                      double deleteBuyOffer, double dataCheck,
                       double checkBuyOffers, double checkSellOffers, double checkUserData,
-                      double continueDataChecking, int strategy, long testTime, int requestsNumber) {
+                      int strategy, long testTime, int requestsNumber) {
         this.timeBetweenRequests = timeBetweenRequests;
         this.numberOfUsers = numberOfUsers;
         this.stockPlay = stockPlay;
-        this.createCompany = createCompany;
         this.createBuyOffer = createBuyOffer;
         this.createSellOffer = createSellOffer;
         this.deleteSellOffer = deleteSellOffer;
         this.deleteBuyOffer = deleteBuyOffer;
-        this.continueStockPlaying = continueStockPlaying;
         this.dataCheck = dataCheck;
         this.checkBuyOffers = checkBuyOffers;
         this.checkSellOffers = checkSellOffers;
         this.checkUserData = checkUserData;
-        this.continueDataChecking = continueDataChecking;
         this.strategy = strategy;
         this.testTime = testTime;
         this.requestsNumber = requestsNumber;
@@ -87,14 +81,6 @@ public class RunTestDTO {
         this.stockPlay = stockPlay;
     }
 
-    public double getCreateCompany() {
-        return createCompany;
-    }
-
-    public void setCreateCompany(double createCompany) {
-        this.createCompany = createCompany;
-    }
-
     public double getCreateBuyOffer() {
         return createBuyOffer;
     }
@@ -127,14 +113,6 @@ public class RunTestDTO {
         this.deleteBuyOffer = deleteBuyOffer;
     }
 
-    public double getContinueStockPlaying() {
-        return continueStockPlaying;
-    }
-
-    public void setContinueStockPlaying(double continueStockPlaying) {
-        this.continueStockPlaying = continueStockPlaying;
-    }
-
     public double getDataCheck() {
         return dataCheck;
     }
@@ -165,14 +143,6 @@ public class RunTestDTO {
 
     public void setCheckUserData(double checkUserData) {
         this.checkUserData = checkUserData;
-    }
-
-    public double getContinueDataChecking() {
-        return continueDataChecking;
-    }
-
-    public void setContinueDataChecking(double continueDataChecking) {
-        this.continueDataChecking = continueDataChecking;
     }
 
     public int getStrategy() {

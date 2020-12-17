@@ -16,6 +16,9 @@ public class TestServiceImpl implements TestService {
     @Autowired
     private TestRepository testRepository;
 
+    @Autowired
+    private CpuDataRepository cpuDataRepository;
+
     @Override
     public List<Test> getTest() {
         return testRepository.findAll();
@@ -24,6 +27,7 @@ public class TestServiceImpl implements TestService {
     @Override
     public void cleanTestDB(){
         testRepository.deleteAll();
+        cpuDataRepository.deleteAll();
     }
 
     @Override

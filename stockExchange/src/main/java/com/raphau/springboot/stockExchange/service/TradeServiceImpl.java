@@ -9,7 +9,8 @@ import java.util.concurrent.Semaphore;
 @Service
 public class TradeServiceImpl {
 
-    private final HashMap<Integer, Semaphore> companySemaphores = new HashMap<>();
+    private final HashMap<Integer, Semaphore>
+            companySemaphores = new HashMap<>();
 
     @Autowired
     private TradingThread tradingThread;
@@ -28,3 +29,4 @@ public class TradeServiceImpl {
         companySemaphores.put(companyId, semaphore);
     }
 }
+

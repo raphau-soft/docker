@@ -34,6 +34,7 @@ C:\Users\Rafal\Desktop\System\stockExchange\src\main\java\com\raphau\springboot\
 C:\Users\Rafal\Desktop\System\stockExchange\src\main\java\com\raphau\springboot\stockExchange\rest\CompanyRestController.java
 C:\Users\Rafal\Desktop\System\stockExchange\src\main\java\com\raphau\springboot\stockExchange\security\jwt\AuthTokenFilter.java
 C:\Users\Rafal\Desktop\System\stockExchange\src\main\java\com\raphau\springboot\stockExchange\dao\StockRepository.java
+C:\Users\Rafal\Desktop\System\stockExchange\src\main\java\com\raphau\springboot\stockExchange\dao\CpuDataRepository.java
 C:\Users\Rafal\Desktop\System\stockExchange\src\main\java\com\raphau\springboot\stockExchange\security\MyUserDetails.java
 C:\Users\Rafal\Desktop\System\stockExchange\src\main\java\com\raphau\springboot\stockExchange\rest\UserRestController.java
 C:\Users\Rafal\Desktop\System\stockExchange\src\main\java\com\raphau\springboot\stockExchange\service\ints\StockRateService.java
@@ -61,6 +62,7 @@ C:\Users\Rafal\Desktop\System\stockExchange\src\main\java\com\raphau\springboot\
 C:\Users\Rafal\Desktop\System\stockExchange\src\main\java\com\raphau\springboot\stockExchange\payload\request\SignupRequest.java
 C:\Users\Rafal\Desktop\System\stockExchange\src\main\java\com\raphau\springboot\stockExchange\service\imps\StockRateServiceImpl.java
 C:\Users\Rafal\Desktop\System\stockExchange\src\main\java\com\raphau\springboot\stockExchange\service\ints\SellOfferService.java
+C:\Users\Rafal\Desktop\System\stockExchange\src\main\java\com\raphau\springboot\stockExchange\entity\CpuData.java
 C:\Users\Rafal\Desktop\System\stockExchange\src\main\java\com\raphau\springboot\stockExchange\exception\StockAmountException.java
 C:\Users\Rafal\Desktop\System\stockExchange\src\main\java\com\raphau\springboot\stockExchange\dao\UserRepository.java
 C:\Users\Rafal\Desktop\System\stockExchange\src\main\java\com\raphau\springboot\stockExchange\security\MyUserDetailsService.java

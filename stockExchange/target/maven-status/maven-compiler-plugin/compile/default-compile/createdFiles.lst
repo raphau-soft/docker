@@ -8,6 +8,7 @@ com\raphau\springboot\stockExchange\security\jwt\AuthEntryPointJwt.class
 com\raphau\springboot\stockExchange\entity\User.class
 com\raphau\springboot\stockExchange\service\imps\BuyOfferServiceImpl.class
 com\raphau\springboot\stockExchange\exception\CompanyNotFoundException.class
+com\raphau\springboot\stockExchange\dao\CpuDataRepository.class
 com\raphau\springboot\stockExchange\entity\StockRate.class
 com\raphau\springboot\stockExchange\dao\StockRepository.class
 com\raphau\springboot\stockExchange\dto\UserUpdDTO.class
@@ -54,6 +55,7 @@ com\raphau\springboot\stockExchange\entity\Test.class
 com\raphau\springboot\stockExchange\rest\CompanyRestController.class
 com\raphau\springboot\stockExchange\dao\CompanyRepository.class
 com\raphau\springboot\stockExchange\service\imps\StockServiceImpl.class
+com\raphau\springboot\stockExchange\entity\CpuData.class
 com\raphau\springboot\stockExchange\exception\StockAmountException.class
 com\raphau\springboot\stockExchange\rest\StockRateController.class
 com\raphau\springboot\stockExchange\dao\TestRepository.class

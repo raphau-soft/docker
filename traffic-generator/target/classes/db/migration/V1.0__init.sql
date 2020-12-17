@@ -20,6 +20,14 @@ CREATE TABLE IF NOT EXISTS `test`(
     FOREIGN KEY(`endpoint_id`) REFERENCES `endpoint`(`id`)
 );
 
+CREATE TABLE IF NOT EXISTS `cpu_data`(
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `timestamp` bigint(45) NOT NULL,
+    `name` varchar(45) NOT NULL,
+    `cpu_usage` double NOT NULL,
+    PRIMARY KEY(`id`)
+);
+
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE test;
 TRUNCATE endpoint;

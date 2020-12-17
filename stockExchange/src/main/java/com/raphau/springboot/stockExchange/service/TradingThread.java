@@ -15,6 +15,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.Semaphore;
@@ -24,6 +28,7 @@ public class TradingThread {
 
     private final int OFFERS_NUMBER = 5;
     public String name;
+    private final OperatingSystemMXBean bean = (com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 
     @Autowired
     private BuyOfferRepository buyOfferRepository;
@@ -41,21 +46,20 @@ public class TradingThread {
     private UserRepository userRepository;
     @Autowired
     private CompanyRepository companyRepository;
+    @Autowired
+    private CpuDataRepository cpuDataRepository;
 
     Logger log = LoggerFactory.getLogger(TradingThread.class);
 
 
     @Async("asyncExecutor")
     public void run(int companyId, Semaphore semaphore, Object dto, boolean flag) {
-        long semaphoreTime = System.currentTimeMillis();
         Test test = new Test();
         test.setName(name);
         try {
-            // System.out.println("\n\n\n Trying to acquire semaphore for company " + companyId + "\n\n\n");
+            long semaphoreTime = System.currentTimeMillis();
             semaphore.acquire();
             test.setSemaphoreWaitTime(System.currentTimeMillis() - semaphoreTime);
-            // System.out.println("\n\n\n Acquired semaphore for company " + companyId + "\n\n\n");
-            // flag == true is buyOffer / flag == false is sellOffer
             if(flag){
                 addBuyOffer((BuyOfferDTO) dto);
             } else {
@@ -63,23 +67,17 @@ public class TradingThread {
             }
 
             List<SellOffer>  sellOffers = new ArrayList<>();
-
-            // Trading logic is here
-            // check if there are 5 buy offers and 5 sell offers
             long timeDB = System.currentTimeMillis();
-            List<BuyOffer> buyOffers = new ArrayList<>(buyOfferRepository.findByCompany_IdAndActual(companyId, true));
+            List<BuyOffer> buyOffers = new ArrayList<>(buyOfferRepository
+                    .findByCompany_IdAndActual(companyId, true));
             List<Stock> stocks = stockRepository.findByCompany_Id(companyId);
             test.setDatabaseTime(System.currentTimeMillis() - timeDB);
-
-            // System.out.println("\n\n\n Amount of buyOffers - " + buyOffers.size() + "\n\n\n");
-
             stocks.forEach(stock -> sellOffers.addAll(stock.getSellOffers()));
             sellOffers.removeIf(sellOffer -> !sellOffer.isActual());
-            // System.out.println("\n\n\n Amount of sellOffers - " + sellOffers.size() + "\n\n\n");
-
-            // sort'em
             buyOffers.sort(new SortBuyOffers());
             sellOffers.sort(new SortSellOffers());
+
+
             List<Transaction> transactions = new ArrayList<>();
             // trade with three variants (more stocks on sell/buy offer, or even)
             test.setApplicationTime(0);
@@ -109,34 +107,46 @@ public class TradingThread {
         }
     }
 
-
     private synchronized void addBuyOffer(BuyOfferDTO buyOfferDTO){
         Calendar c = Calendar.getInstance();
         c.setTime(buyOfferDTO.getDateLimit());
         c.add(Calendar.DATE, 1);
         buyOfferDTO.setDateLimit(c.getTime());
         buyOfferDTO.setId(0);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder
+                .getContext().getAuthentication();
         MyUserDetails userDetails = (MyUserDetails) auth.getPrincipal();
-        Optional<User> userOptional = userRepository.findByUsername(userDetails.getUsername());
-        Optional<Company> companyOptional = companyRepository.findById(buyOfferDTO.getCompany_id());
+        Optional<User> userOptional = userRepository
+                .findByUsername(userDetails.getUsername());
+        Optional<Company> companyOptional = companyRepository
+                .findById(buyOfferDTO.getCompany_id());
         if(!companyOptional.isPresent()){
-            throw new CompanyNotFoundException("Company with id " + buyOfferDTO.getCompany_id() + " not found");
+            throw new CompanyNotFoundException("Company with id "
+                    + buyOfferDTO.getCompany_id() + " not found");
         }
         if(!userOptional.isPresent()){
-            throw new UserNotFoundException("User" + userDetails.getUsername() + " not found");
+            throw new UserNotFoundException("User" +
+                    userDetails.getUsername() + " not found");
         }
         User user = userOptional.get();
         Company company = companyOptional.get();
-        if(user.getMoney().compareTo(buyOfferDTO.getMaxPrice().multiply(BigDecimal.valueOf(buyOfferDTO.getAmount()))) < 0 || buyOfferDTO.getAmount() <= 0){
-            throw new NotEnoughMoneyException("Not enough money (Amount is " + buyOfferDTO.getAmount() + "). You have " + user.getMoney().toString() + " but you need " + buyOfferDTO.getMaxPrice().multiply(BigDecimal.valueOf(buyOfferDTO.getAmount())).toString());
+        if(user.getMoney().compareTo(buyOfferDTO.getMaxPrice()
+                .multiply(BigDecimal.valueOf(buyOfferDTO.getAmount()))) < 0
+                || buyOfferDTO.getAmount() <= 0){
+            throw new NotEnoughMoneyException("Not enough money (Amount is "
+                    + buyOfferDTO.getAmount() + "). You have "
+                    + user.getMoney().toString() + " " +
+                    "but you need " + buyOfferDTO.getMaxPrice().
+                    multiply(BigDecimal.valueOf(buyOfferDTO.getAmount()))
+                    .toString());
         }
         BuyOffer buyOffer = new BuyOffer(0, company, user,
-                buyOfferDTO.getMaxPrice(), buyOfferDTO.getAmount(), buyOfferDTO.getAmount(), buyOfferDTO.getDateLimit(), true);
-        user.setMoney(user.getMoney().subtract(buyOfferDTO.getMaxPrice().multiply(BigDecimal.valueOf(buyOfferDTO.getAmount()))));
-        //log.info("Saving user in addBuyOffer " + user.toString());
+                buyOfferDTO.getMaxPrice(), buyOfferDTO.getAmount(),
+                buyOfferDTO.getAmount(), buyOfferDTO.getDateLimit(),
+                true);
+        user.setMoney(user.getMoney().subtract(buyOfferDTO.getMaxPrice()
+                .multiply(BigDecimal.valueOf(buyOfferDTO.getAmount()))));
         userRepository.save(user);
-        //log.info("Saving buyOffer in addBuyOffer " + buyOffer.toString());
         buyOfferRepository.save(buyOffer);
     }
 
@@ -232,6 +242,23 @@ public class TradingThread {
                 i++;j++;
             }
         }
+        for (Method method : bean.getClass().getDeclaredMethods()) {
+            method.setAccessible(true);
+            if (method.getName().startsWith("getSystem")
+                    && Modifier.isPublic(method.getModifiers())) {
+                Object value;
+                try {
+                    value = method.invoke(bean);
+                } catch (Exception e) {
+                    value = e;
+                }
+
+                CpuData cpuData = new CpuData(0, name, System.currentTimeMillis(), (Double) value);
+
+                cpuDataRepository.save(cpuData);
+
+            }
+        }
         test.setApplicationTime(System.currentTimeMillis() - appTime);
         return true;
     }
@@ -255,20 +282,29 @@ public class TradingThread {
 //            }
 //        }
 
-    private synchronized Transaction noneOfferStay(BuyOffer buyOffer, SellOffer sellOffer, Test test){
-        double price = (buyOffer.getMaxPrice().doubleValue() + sellOffer.getMinPrice().doubleValue())/2;
-        Transaction transaction = new Transaction(0, buyOffer, sellOffer, sellOffer.getAmount(), price, new Date());
+    private synchronized Transaction noneOfferStay
+            (BuyOffer buyOffer, SellOffer sellOffer, Test test){
+        double price = (buyOffer.getMaxPrice().doubleValue()
+                + sellOffer.getMinPrice().doubleValue())/2;
+        Transaction transaction = new Transaction(0, buyOffer,
+                sellOffer, sellOffer.getAmount(), price, new Date());
         User sellOfferOwner = sellOffer.getStock().getUser();
         User buyOfferOwner = buyOffer.getUser();
-        buyOfferOwner.setMoney(buyOfferOwner.getMoney().add(buyOffer.getMaxPrice()
-                .subtract(new BigDecimal(price)).multiply(new BigDecimal(sellOffer.getAmount()))));
-        sellOfferOwner.setMoney(sellOfferOwner.getMoney().add(new BigDecimal(price * sellOffer.getAmount())));
+        buyOfferOwner.setMoney(buyOfferOwner.getMoney().
+                add(buyOffer.getMaxPrice()
+                .subtract(new BigDecimal(price))
+                        .multiply(new BigDecimal(sellOffer.getAmount()))));
+        sellOfferOwner.setMoney(sellOfferOwner.getMoney()
+                .add(new BigDecimal(price * sellOffer.getAmount())));
         long timeDB = System.currentTimeMillis();
-        Optional<Stock> stockOptional = stockRepository.findByCompanyAndUser(buyOffer.getCompany(), buyOfferOwner);
-        test.setDatabaseTime(test.getDatabaseTime() + System.currentTimeMillis() - timeDB);
+        Optional<Stock> stockOptional = stockRepository
+                .findByCompanyAndUser(buyOffer.getCompany(), buyOfferOwner);
+        test.setDatabaseTime(test.getDatabaseTime()
+                + System.currentTimeMillis() - timeDB);
         Stock stock;
         if(!stockOptional.isPresent()) {
-            stock = new Stock(0, buyOfferOwner, buyOffer.getCompany(), sellOffer.getAmount());
+            stock = new Stock(0, buyOfferOwner,
+                    buyOffer.getCompany(), sellOffer.getAmount());
         } else {
             stock = stockOptional.get();
             stock.setAmount(stock.getAmount() + sellOffer.getAmount());
@@ -278,15 +314,12 @@ public class TradingThread {
         sellOffer.setAmount(0);
         sellOffer.setActual(false);
         timeDB = System.currentTimeMillis();
-        //log.info("Saving stock in noneOfferStay " + stock.toString());
         stockRepository.save(stock);
-        //log.info("Saving transaction in noneOfferStay " + transaction.toString());
         transactionRepository.save(transaction);
-        //log.info("Saving buyOffer in noneOfferStay " + buyOffer.toString());
         buyOfferRepository.save(buyOffer);
-        //log.info("Saving sellOffer in noneOfferStay " + sellOffer.toString());
         sellOfferRepository.save(sellOffer);
-        test.setDatabaseTime(test.getDatabaseTime() + System.currentTimeMillis() - timeDB);
+        test.setDatabaseTime(test.getDatabaseTime()
+                + System.currentTimeMillis() - timeDB);
         return transaction;
     }
 

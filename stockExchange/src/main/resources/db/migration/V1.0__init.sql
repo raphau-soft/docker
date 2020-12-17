@@ -84,6 +84,14 @@ CREATE TABLE IF NOT EXISTS `test`(
     PRIMARY KEY(`id`)
 );
 
+CREATE TABLE IF NOT EXISTS `cpu_data`(
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `timestamp` bigint(45) NOT NULL,
+    `name` varchar(45) NOT NULL,
+    `cpu_usage` double NOT NULL,
+    PRIMARY KEY(`id`)
+);
+
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE stock_rate;
 TRUNCATE user;
@@ -92,4 +100,6 @@ TRUNCATE stock;
 TRUNCATE sell_offer;
 TRUNCATE buy_offer;
 TRUNCATE company;
+TRUNCATE test;
+TRUNCATE cpu_data;
 SET FOREIGN_KEY_CHECKS = 1;

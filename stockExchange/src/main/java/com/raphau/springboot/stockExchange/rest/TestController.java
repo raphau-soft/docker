@@ -1,5 +1,8 @@
 package com.raphau.springboot.stockExchange.rest;
 
+import com.raphau.springboot.stockExchange.dao.CpuDataRepository;
+import com.raphau.springboot.stockExchange.entity.CpuData;
+import com.raphau.springboot.stockExchange.entity.Test;
 import com.raphau.springboot.stockExchange.service.TradingThread;
 import com.raphau.springboot.stockExchange.service.ints.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,9 @@ import java.lang.reflect.Method;
 import javax.sql.DataSource;
 import java.lang.management.*;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins="*", maxAge = 3600)
@@ -27,9 +33,17 @@ public class TestController {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private CpuDataRepository cpuDataRepository;
+
     @GetMapping("/getTest")
     public ResponseEntity<?> getTest(){
-        return ResponseEntity.ok(testService.getTest());
+        List<Test> tests = testService.getTest();
+        List<CpuData> cpuData = cpuDataRepository.findAll();
+        Map<String, Object> temp = new HashMap<>();
+        temp.put("tests", tests);
+        temp.put("cpuData", cpuData);
+        return ResponseEntity.ok(temp);
     }
 
     @PostMapping("/setName")

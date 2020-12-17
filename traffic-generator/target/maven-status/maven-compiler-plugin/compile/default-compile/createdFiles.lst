@@ -1,7 +1,6 @@
 com\raphau\trafficgenerator\dao\EndpointRepository.class
 com\raphau\trafficgenerator\dto\TestDetailsDTO.class
 com\raphau\trafficgenerator\service\AsyncService$4.class
-com\raphau\trafficgenerator\service\UserThread.class
 com\raphau\trafficgenerator\dto\BuyOffer.class
 com\raphau\trafficgenerator\configuration\AsyncConfiguration.class
 com\raphau\trafficgenerator\service\AsyncService$2.class
@@ -22,4 +21,6 @@ com\raphau\trafficgenerator\controller\TestController.class
 com\raphau\trafficgenerator\entity\Endpoint.class
 com\raphau\trafficgenerator\service\AsyncService$1.class
 com\raphau\trafficgenerator\dto\SellOffer.class
+com\raphau\trafficgenerator\dao\CpuDataRepository.class
+com\raphau\trafficgenerator\entity\CpuData.class
 com\raphau\trafficgenerator\service\AsyncService$6.class

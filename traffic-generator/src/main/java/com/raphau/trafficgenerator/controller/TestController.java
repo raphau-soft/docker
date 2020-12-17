@@ -1,11 +1,13 @@
 package com.raphau.trafficgenerator.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.raphau.trafficgenerator.dao.CpuDataRepository;
 import com.raphau.trafficgenerator.dao.EndpointRepository;
 import com.raphau.trafficgenerator.dao.TestRepository;
 import com.raphau.trafficgenerator.dto.ClientTestDTO;
 import com.raphau.trafficgenerator.dto.RunTestDTO;
 import com.raphau.trafficgenerator.dto.UserLogin;
+import com.raphau.trafficgenerator.entity.CpuData;
 import com.raphau.trafficgenerator.entity.Endpoint;
 import com.raphau.trafficgenerator.entity.Test;
 import com.raphau.trafficgenerator.service.AsyncService;
@@ -16,6 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.Attribute;
+import javax.management.AttributeList;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +36,8 @@ import java.util.Map;
 public class TestController {
 
     private static Logger log = LoggerFactory.getLogger(TestController.class);
-    private RunTestDTO runTestDTO = new RunTestDTO(20, 50, 0.9, 0.02, 0.44, 0.44, 0.05, 0.05, 0.9, 0.1, 0.33, 0.33, 0.34, 0.9, 1, 120000, 20);
-
+    private RunTestDTO runTestDTO = new RunTestDTO(20, 50, 0.9, 0.44, 0.44, 0.05, 0.05, 0.1, 0.33, 0.33, 0.34, 1, 120000, 20);
+    private final OperatingSystemMXBean  bean = (com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 
     @Autowired
     private AsyncService asyncService;
@@ -37,6 +47,9 @@ public class TestController {
 
     @Autowired
     private TestRepository testRepository;
+
+    @Autowired
+    private CpuDataRepository cpuDataRepository;
 
     @PostMapping("/runTest")
     public void asyncTest(@RequestBody String name) throws Exception {
@@ -53,7 +66,6 @@ public class TestController {
         Map<String, Long> apiTime = new HashMap<>();
         List<UserLogin> userLogins = new ArrayList<>();
 
-        // RunTests
         asyncService.setEndWork(false);
         List<ClientTestDTO> clientTestDTOList = new ArrayList<>();
 
@@ -67,8 +79,38 @@ public class TestController {
             Thread.sleep(10);
             asyncService.runTests(userLogins.get(i), clientTestDTOList, runTestDTO);
         }
+//        MBeanServer mbs    = ManagementFactory.getPlatformMBeanServer();
+//        ObjectName objectName    = ObjectName.getInstance("java.lang:type=OperatingSystem");
         long time = runTestDTO.getTestTime();
+        int x = 0;
         while(clientTestDTOList.size() < runTestDTO.getNumberOfUsers()){
+            x--;
+            if(x<=0) {
+
+                for (Method method : bean.getClass().getDeclaredMethods()) {
+                    method.setAccessible(true);
+                    if (method.getName().startsWith("getSystem")
+                            && Modifier.isPublic(method.getModifiers())) {
+                        Object value;
+                        try {
+                            value = method.invoke(bean);
+                        } catch (Exception e) {
+                            value = e;
+                        }
+
+                        CpuData cpuData = new CpuData(0, name, System.currentTimeMillis(), (Double) value);
+
+                        cpuDataRepository.save(cpuData);
+
+                    }
+                }
+
+//                AttributeList list = mbs.getAttributes(objectName, new String[]{"ProcessCpuLoad"});
+//                Attribute att = (Attribute) list.get(0);
+//                Double value = (Double) att.getValue();
+//                System.out.println((int) (value * 1000) / 10.0);
+                x = 15;
+            }
             Thread.sleep(1000);
             time -= 1000;
             log.info(time/1000 + "s left");
@@ -113,11 +155,10 @@ public class TestController {
     @GetMapping("/getTest")
     public ResponseEntity<?> getTest(){
         List<Test> tests = testRepository.findAll();
-        for(int i = 0; i < tests.size(); i++){
-            log.info(tests.get(i).toString());
-        }
+        List<CpuData> cpuData = cpuDataRepository.findAll();
         Map<String, Object> temp = new HashMap<>();
         temp.put("tests", tests);
+        temp.put("cpuData", cpuData);
         return ResponseEntity.ok(temp);
     }
 
