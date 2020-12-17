@@ -492,7 +492,7 @@ public class AsyncService {
                     double rate = stockRate.getRate();
                     // price from 80% to 110% of rate (I think so)
                     price = round((Math.abs(new Random().nextDouble()) % (rate * 0.3) + rate * 0.8), 2);
-                    amount = (int) Math.round(Math.random() * 100.f % (user.getMoney() / price / 10));
+                    amount = (int) Math.round(Math.random() * 100.f % (stocks.get(stockNum).getAmount())) + 1;
                     createSellOffer(jwt, company.getId(), amount, price, clientTestDTO);
                     stocks.remove(stockNum);
                 }
