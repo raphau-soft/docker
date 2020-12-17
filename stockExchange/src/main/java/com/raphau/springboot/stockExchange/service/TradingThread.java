@@ -170,7 +170,7 @@ public class TradingThread {
         }
         Stock stock = stockOptional.get();
         if(sellOfferDTO.getAmount() > stock.getAmount() || sellOfferDTO.getAmount() <= 0){
-            throw new StockAmountException("Wrong amount of resources");
+            throw new StockAmountException("Wrong amount of resources - stock " + stock.getAmount() + " - sellOffer " + sellOfferDTO.getAmount());
         }
         stock.setAmount(stock.getAmount() - sellOfferDTO.getAmount());
         SellOffer sellOffer = new SellOffer(sellOfferDTO, stock);
