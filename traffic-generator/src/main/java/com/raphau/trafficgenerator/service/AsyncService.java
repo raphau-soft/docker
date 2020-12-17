@@ -426,6 +426,7 @@ public class AsyncService {
                     // price from 90% to 120% of rate (I think so)
                     price = round((Math.abs(new Random().nextDouble()) % (rate * 0.3) + rate * 0.9), 2);
                     amount = (int) Math.round(Math.random() * 100.f % (user.getMoney() / price / 10));
+                    if(amount == 0) amount = 1;
                     ////log.info("Price: " + price + " Money: " + user.getMoney() + " Amount: " + amount);
                     createBuyOffer(jwt, company.getId(), amount, price, clientTestDTO);
                     stockRates.remove(companyNum);
