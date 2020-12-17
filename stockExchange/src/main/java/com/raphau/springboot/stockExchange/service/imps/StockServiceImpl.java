@@ -42,7 +42,7 @@ public class StockServiceImpl implements StockService {
         User user = userOpt.get();
         List<Stock> stocks = user.getStocks();
         List<StockRate> stockRates = new ArrayList<>();
-
+        stocks.removeIf(stock -> stock.getAmount() == 0);
         for (Stock stock : stocks) {
             timeBase = System.currentTimeMillis();
             Optional<StockRate> stockRate = stockRateRepository.findByCompanyAndActual(stock.getCompany(), true);
