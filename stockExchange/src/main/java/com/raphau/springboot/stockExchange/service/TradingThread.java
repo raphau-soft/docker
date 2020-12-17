@@ -179,8 +179,10 @@ public class TradingThread {
             log.info("Deleting stock");
             stockRepository.delete(stock);
         }
-        else
+        else {
+            log.info("Saving stock - amount " + stock.getAmount());
             stockRepository.save(stock);
+        }
         //log.info("Saving sellOffer in addSellOffer " + sellOffer.toString());
         sellOfferRepository.save(sellOffer);
     }
