@@ -16,6 +16,26 @@ public class ClientTestDTO {
     Map<String, Long> summaryEndpointTime = new HashMap<>();
     Map<String, Long> summaryApiTime = new HashMap<>();
 
+    public void addTestDetails(String endpoint, TestDetailsDTO testDetailsDTO, long apiTime) {
+        Integer number = numberOfRequests.get(endpoint);
+        Long prevSummaryEndpointTime = summaryEndpointTime.get(endpoint);
+        Long prevSummaryEndpointDatabaseTime = summaryEndpointDatabaseTime.get(endpoint);
+        Long prevSummaryApiTime = summaryApiTime.get(endpoint);
+        if(prevSummaryEndpointTime == null){
+            numberOfRequests.put(endpoint, 1);
+            summaryEndpointTime.put(endpoint, testDetailsDTO.getApplicationTime());
+            summaryEndpointDatabaseTime.put(endpoint, testDetailsDTO.getDatabaseTime());
+            summaryApiTime.put(endpoint, apiTime);
+        } else {
+            numberOfRequests.put(endpoint, ++number);
+            summaryEndpointTime.put(endpoint, testDetailsDTO.getApplicationTime()
+                    + prevSummaryEndpointTime);
+            summaryEndpointDatabaseTime.put(endpoint, testDetailsDTO.getDatabaseTime()
+                    + prevSummaryEndpointDatabaseTime);
+            summaryApiTime.put(endpoint, prevSummaryApiTime + apiTime);
+        }
+    }
+
     public ClientTestDTO(Map<String, Integer> numberOfRequests, Map<String, Long> summaryEndpointDatabaseTime, Map<String, Long> summaryEndpointTime, Map<String, Long> summaryApiTime) {
         this.numberOfRequests = numberOfRequests;
         this.summaryEndpointDatabaseTime = summaryEndpointDatabaseTime;
@@ -68,27 +88,4 @@ public class ClientTestDTO {
                 '}';
     }
 
-    public void addTestDetails(String endpoint, TestDetailsDTO testDetailsDTO, long apiTime) {
-        Integer number = numberOfRequests.get(endpoint);
-//        if(endpoint.equals("user") && number != null)
-//            log.info(endpoint + " - ilość zapytań" + (number + 1));
-        Long prevSummaryEndpointTime = summaryEndpointTime.get(endpoint);
-        Long prevSummaryEndpointDatabaseTime = summaryEndpointDatabaseTime.get(endpoint);
-        Long prevSummaryApiTime = summaryApiTime.get(endpoint);
-        if(prevSummaryEndpointTime == null){
-            numberOfRequests.put(endpoint, 1);
-            summaryEndpointTime.put(endpoint, testDetailsDTO.getApplicationTime());
-            summaryEndpointDatabaseTime.put(endpoint, testDetailsDTO.getDatabaseTime());
-            summaryApiTime.put(endpoint, apiTime);
-        } else {
-//            if(endpoint.equals("user"))
-//                log.info("Ilość zapytań przed dodaniem - " + numberOfRequests.get(endpoint));
-            numberOfRequests.put(endpoint, ++number);
-//            if(endpoint.equals("user"))
-//                log.info("Ilość zapytań po dodaniu - " + numberOfRequests.get(endpoint));
-            summaryEndpointTime.put(endpoint, testDetailsDTO.getApplicationTime() + prevSummaryEndpointTime);
-            summaryEndpointDatabaseTime.put(endpoint, testDetailsDTO.getDatabaseTime() + prevSummaryEndpointDatabaseTime);
-            summaryApiTime.put(endpoint, prevSummaryApiTime + apiTime);
-        }
-    }
 }

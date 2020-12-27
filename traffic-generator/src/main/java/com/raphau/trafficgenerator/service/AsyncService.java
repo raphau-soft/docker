@@ -64,31 +64,33 @@ public class AsyncService {
 
     @Async("asyncExecutor")
     public void runTests(UserLogin userLogin, List<ClientTestDTO> clientTestDTOList,
-                         RunTestDTO runTestDTO) throws JSONException, JsonProcessingException, InterruptedException {
+                         RunTestDTO runTestDTO) throws JSONException,
+            JsonProcessingException, InterruptedException {
         int requestsNumber = 0;
         ClientTestDTO clientTestDTO = new ClientTestDTO();
         createCompany(userLogin.getJwt(), clientTestDTO);
-
         double random = Math.random();
         if (random <= runTestDTO.getStockPlay()) {
             for(;;) {
-                ////log.info("Playing on stock - " + username);
                 random = Math.random();
                 if (random <= runTestDTO.getCreateSellOffer()) {
-                    ////log.info("Create a sell offer - " + userLogin.getUsername());
-                    strategyAddSellOffer(userLogin.getJwt(), runTestDTO.getStrategy(), clientTestDTO);
-                } else if (random > runTestDTO.getCreateSellOffer()&& random <= runTestDTO.getCreateBuyOffer() + runTestDTO.getCreateSellOffer()) {
-                    ////log.info("Create a buy offer - " + userLogin.getUsername());
-                    strategyAddBuyOffer(userLogin.getJwt(), runTestDTO.getStrategy(), clientTestDTO);
-                } else if (random > runTestDTO.getCreateBuyOffer() + runTestDTO.getCreateSellOffer() && random <= runTestDTO.getCreateBuyOffer() + runTestDTO.getCreateSellOffer() + runTestDTO.getDeleteSellOffer()) {
-                    ////log.info("USUNIECIE OFERTY SPRZEDAZY " + userLogin.getUsername());
+                    strategyAddSellOffer(userLogin.getJwt(),
+                            runTestDTO.getStrategy(), clientTestDTO);
+                } else if (random > runTestDTO.getCreateSellOffer()
+                        && random <= runTestDTO.getCreateBuyOffer()
+                        + runTestDTO.getCreateSellOffer()) {
+                    strategyAddBuyOffer(userLogin.getJwt(),
+                            runTestDTO.getStrategy(), clientTestDTO);
+                } else if (random > runTestDTO.getCreateBuyOffer()
+                        + runTestDTO.getCreateSellOffer() &&
+                        random <= runTestDTO.getCreateBuyOffer()
+                                + runTestDTO.getCreateSellOffer() +
+                                runTestDTO.getDeleteSellOffer()) {
                     deleteSellOffer(userLogin.getJwt(), clientTestDTO);
                 } else {
-                    ////log.info("USUNIECIE OFERTY KUPNA " + userLogin.getUsername());
                     deleteBuyOffer(userLogin.getJwt(), clientTestDTO);
                 }
                 requestsNumber++;
-                // //log.info(userLogin.getUsername() + " - ilość zapytań " + requestsNumber);
                 if(endWork || requestsNumber >= runTestDTO.getRequestsNumber()){
                     clientTestDTOList.add(clientTestDTO);
                     return;
@@ -97,16 +99,14 @@ public class AsyncService {
             }
         } else {
             for(;;) {
-                ////log.info("SPRAWDZANIE DANYCH " + username);
                 random = Math.random();
                 if(random <= runTestDTO.getDataCheck()){
-                    ////log.info("SPRAWDZANIE OFERT KUPNA " + username);
                     getBuyOffers(userLogin.getJwt(), clientTestDTO);
-                } else if(random > runTestDTO.getCheckBuyOffers() && random <= runTestDTO.getCheckBuyOffers() + runTestDTO.getCheckSellOffers()){
-                    ////log.info("SPRAWDZANIE OFERT SPRZEDAZY " + username);
+                } else if(random > runTestDTO.getCheckBuyOffers()
+                        && random <= runTestDTO.getCheckBuyOffers()
+                        + runTestDTO.getCheckSellOffers()){
                     getSellOffers(userLogin.getJwt(), clientTestDTO);
                 } else {
-                    ////log.info("SPRAWDZANIE SWOICH DANYCH " + username);
                     getUser(userLogin.getJwt(), clientTestDTO);
                 }
                 requestsNumber++;
@@ -159,8 +159,7 @@ public class AsyncService {
         clientTestDTO.addTestDetails(USER_BUYOFFERS_D, testDetailsDTO, apiTime);
     }
 
-    public boolean postRegistration(String username) throws JSONException {
-        ////log.info("Registration " + username + " starts");
+    public void postRegistration(String username) throws JSONException {
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         JSONObject personJsonObject;
@@ -171,16 +170,14 @@ public class AsyncService {
         personJsonObject.put("username", username);
         personJsonObject.put("email", "mail@mail.pl");
         personJsonObject.put("password", "testpassword");
-        HttpEntity<String> request = new HttpEntity<>(personJsonObject.toString(), headers);
+        HttpEntity<String> request =
+                new HttpEntity<>(personJsonObject.toString(), headers);
         String message = "";
         try {
-            message = restTemplate.postForObject(this.api + "api/auth/signup", request, String.class);
-            ////log.info(message);
-            ////log.info("Registration " + username + " ends");
-            return true;
+            message = restTemplate.postForObject(this.api
+                    + "api/auth/signup", request, String.class);
         } catch (Exception e){
-            ////log.info("Error  registration" + username);
-            return false;
+            e.printStackTrace();
         }
     }
 
@@ -399,11 +396,7 @@ public class AsyncService {
         double price;
         int amount;
         switch(strategy){
-            case RAND_CHEAP_MANY_COMP:
-
-                break;
             case RAND_EXPENSIVE_ONE_COMP:
-                // buying stock of one company logic
                 price = Math.random() * 100.f % (user.getMoney()/4.f);
                 price = round(price, 2);
                 amount = (int) Math.round(Math.random() * 100.f % (user.getMoney() / price / 2));
@@ -412,23 +405,21 @@ public class AsyncService {
                 createBuyOffer(jwt, companyId, amount, price, clientTestDTO);
                 break;
             case RAND_RANDOM_MANY_COMP:
-                // buying stocks of many companies
                 String stockR = getStockRates(jwt, clientTestDTO);
                 if(stockR == null) break;
                 jsonObject = new JSONObject(stockR);
                 Type stockRateListType = new TypeToken<ArrayList<StockRate>>(){}.getType();
-                List<StockRate> stockRates = gson.fromJson(jsonObject.get("stockRate").toString(), stockRateListType);
+                List<StockRate> stockRates = gson.fromJson(jsonObject.get("stockRate")
+                        .toString(), stockRateListType);
                 int amountOfCompanies = Math.abs(new Random().nextInt() % (stockRates.size() / 3)) + 1;
                 for(int i = 0; i < amountOfCompanies; i++){
                     int companyNum = Math.abs(new Random().nextInt() % stockRates.size());
                     StockRate stockRate = stockRates.get(companyNum);
                     Company company = stockRate.getCompany();
                     double rate = stockRate.getRate();
-                    // price from 90% to 120% of rate (I think so)
                     price = round((Math.abs(new Random().nextDouble()) % (rate * 0.3) + rate * 0.9), 2);
                     amount = (int) Math.round(Math.random() * 100.f % (user.getMoney() / price / 10));
                     if(amount == 0) amount = 1;
-                    ////log.info("Price: " + price + " Money: " + user.getMoney() + " Amount: " + amount);
                     createBuyOffer(jwt, company.getId(), amount, price, clientTestDTO);
                     stockRates.remove(companyNum);
                 }
@@ -448,53 +439,45 @@ public class AsyncService {
         Gson gson = new Gson();
         JSONObject jsonObject = new JSONObject(getUser(jwt, clientTestDTO));
         User user = gson.fromJson(jsonObject.get("user").toString(), User.class);
-        ////log.info("@@@@@@@ RESOURCES: " + getResources(jwt));
         String resources = getResources(jwt, clientTestDTO);
         if(resources == null) return;
         jsonObject = new JSONObject(resources);
-        ////log.info("Resources: " + resources);
         Type stockListType = new TypeToken<ArrayList<Stock>>(){}.getType();
         List<Stock> stocks = gson.fromJson(jsonObject.get("stock").toString(), stockListType);
         if(stocks.size() <= 0) return;
         int stockNum;
         switch(strategy){
-            case RAND_CHEAP_MANY_COMP:
-
-                break;
             case RAND_EXPENSIVE_ONE_COMP:
-                // buying stock of one company logic
-                stockNum = Math.abs(new Random().nextInt() % stocks.size());
-                ////log.info("Sekundy przed katastrofą: " + stockNum + "/" + stocks.size());
-                double price = Math.random() % 100.0;
+                stockNum = Math.abs(new Random().nextInt()
+                        % stocks.size());
+                double price = Math.random() % 100.0 + 1;
                 price = round(price, 2);
-                int amount = (int) Math.round(Math.random() * 100.f % (stocks.get(stockNum).getAmount())) + 1;
-                if(amount == 0) amount = 1;
-                ////log.info("Cena: " + price + " Ilość:" + amount + " Faktyczna ilość: " + stocks.get(stockNum).getAmount());
+                int amount = (int) Math.round(Math.random()
+                        * 100.f % (stocks.get(stockNum).getAmount())) + 1;
                 int companyId = stocks.get(stockNum).getCompany().getId();
                 createSellOffer(jwt, companyId, amount, price, clientTestDTO);
                 break;
             case RAND_RANDOM_MANY_COMP:
-                // sell stocks of many companies
                 String stockR = getStockRates(jwt, clientTestDTO);
                 if(stockR == null) break;
                 jsonObject = new JSONObject(stockR);
                 Type stockRateListType = new TypeToken<ArrayList<StockRate>>(){}.getType();
-                List<StockRate> stockRates = gson.fromJson(jsonObject.get("stockRate").toString(), stockRateListType);
+                List<StockRate> stockRates = gson.fromJson(jsonObject.get("stockRate")
+                        .toString(), stockRateListType);
                 int amountOfStocks = Math.abs(new Random().nextInt() % stocks.size())/3 + 1;
                 for(int i = 0; i < amountOfStocks; i++){
                     stockNum = Math.abs(new Random().nextInt() % stocks.size());
-                    // //log.info("Stocks size: " + stocks.size() + " stockNum: " + stockNum);
                     Stock stock = stocks.get(stockNum);
                     Company company = stock.getCompany();
                     StockRate stockRateTemp = new StockRate();
                     stockRateTemp.setCompany(company);
                     int stockRateNum = stockRates.indexOf(stockRateTemp);
-                    ////log.info("StocksRate size: " + stockRates.size() + " stockRateNum: " + stockRateNum);
                     StockRate stockRate = stockRates.get(stockRateNum);
                     double rate = stockRate.getRate();
-                    // price from 80% to 110% of rate (I think so)
-                    price = round((Math.abs(new Random().nextDouble()) % (rate * 0.3) + rate * 0.8), 2);
-                    amount = (int) Math.round(Math.random() * 100.f % (stocks.get(stockNum).getAmount()));
+                    price = round((Math.abs(new Random().nextDouble()) % (rate * 0.3)
+                            + rate * 0.8), 2);
+                    amount = (int) Math.round(Math.random() * 100.f % (stocks.get(stockNum)
+                            .getAmount()));
                     if(amount == 0) amount = 1;
                     createSellOffer(jwt, company.getId(), amount, price, clientTestDTO);
                     stocks.remove(stockNum);
@@ -528,7 +511,9 @@ public class AsyncService {
             clientTestDTO.addTestDetails(BUYOFFER, testDetailsDTO, apiTime);
     }
 
-    private void createSellOffer(String jwt, int companyId, int amount, double price, ClientTestDTO clientTestDTO) throws JSONException {
+    private void createSellOffer(String jwt, int companyId, int amount,
+                                 double price, ClientTestDTO clientTestDTO)
+            throws JSONException {
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + jwt);
@@ -539,15 +524,15 @@ public class AsyncService {
         companyJsonObject.put("minPrice", price);
         companyJsonObject.put("amount", amount);
         companyJsonObject.put("dateLimit", "2014-05-09T00:48:16-04:00");
-        //log.info(companyJsonObject.toString());
-        HttpEntity<String> request = new HttpEntity<>(companyJsonObject.toString(), headers);
-        ////log.info("CREATING A SELL OFFER");
+        HttpEntity<String> request = new HttpEntity<>
+                (companyJsonObject.toString(), headers);
         TestDetailsDTO testDetailsDTO = null;
         long apiTime = System.currentTimeMillis();
         try {
-            testDetailsDTO = restTemplate.postForObject(this.api + "api/sellOffer", request, TestDetailsDTO.class);
+            testDetailsDTO = restTemplate.postForObject
+                    (this.api + "api/sellOffer", request, TestDetailsDTO.class);
         } catch (Exception e){
-            //log.info("Error " + e);
+            e.printStackTrace();
         }
         apiTime = System.currentTimeMillis() - apiTime;
         if(testDetailsDTO != null)

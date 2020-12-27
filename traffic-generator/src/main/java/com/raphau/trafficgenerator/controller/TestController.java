@@ -70,12 +70,11 @@ public class TestController {
         List<ClientTestDTO> clientTestDTOList = new ArrayList<>();
 
         for(int i = 0; i < runTestDTO.getNumberOfUsers(); i++){
-            boolean temp = asyncService.postRegistration(""+i);
+            asyncService.postRegistration(""+i);
             userLogins.add(asyncService.login(""+i));
         }
 
         for(int i = 0; i < runTestDTO.getNumberOfUsers(); i++){
-            log.info("Register " +  i);
             Thread.sleep(10);
             asyncService.runTests(userLogins.get(i), clientTestDTOList, runTestDTO);
         }
@@ -99,16 +98,9 @@ public class TestController {
                         }
 
                         CpuData cpuData = new CpuData(0, name, System.currentTimeMillis(), (Double) value);
-
                         cpuDataRepository.save(cpuData);
-
                     }
                 }
-
-//                AttributeList list = mbs.getAttributes(objectName, new String[]{"ProcessCpuLoad"});
-//                Attribute att = (Attribute) list.get(0);
-//                Double value = (Double) att.getValue();
-//                System.out.println((int) (value * 1000) / 10.0);
                 x = 15;
             }
             Thread.sleep(1000);
@@ -128,14 +120,20 @@ public class TestController {
                 Integer number = numberOfRequests.get(entry.getKey());
                 if(number == null){
                     numberOfRequests.put(entry.getKey(), entry.getValue());
-                    applicationTime.put(entry.getKey(), clientTestDTO.getSummaryEndpointTime().get(entry.getKey()));
-                    databaseTime.put(entry.getKey(), clientTestDTO.getSummaryEndpointDatabaseTime().get(entry.getKey()));
+                    applicationTime.put(entry.getKey(), clientTestDTO.getSummaryEndpointTime()
+                            .get(entry.getKey()));
+                    databaseTime.put(entry.getKey(), clientTestDTO.getSummaryEndpointDatabaseTime()
+                            .get(entry.getKey()));
                     apiTime.put(entry.getKey(), clientTestDTO.getSummaryApiTime().get(entry.getKey()));
                 } else {
-                    numberOfRequests.put(entry.getKey(), entry.getValue() + numberOfRequests.get(entry.getKey()));
-                    applicationTime.put(entry.getKey(), clientTestDTO.getSummaryEndpointTime().get(entry.getKey()) + applicationTime.get(entry.getKey()));
-                    databaseTime.put(entry.getKey(), clientTestDTO.getSummaryEndpointDatabaseTime().get(entry.getKey()) + databaseTime.get(entry.getKey()));
-                    apiTime.put(entry.getKey(), clientTestDTO.getSummaryApiTime().get(entry.getKey()) + apiTime.get(entry.getKey()));
+                    numberOfRequests.put(entry.getKey(), entry.getValue() + numberOfRequests.get(entry
+                            .getKey()));
+                    applicationTime.put(entry.getKey(), clientTestDTO.getSummaryEndpointTime().get(entry
+                            .getKey()) + applicationTime.get(entry.getKey()));
+                    databaseTime.put(entry.getKey(), clientTestDTO.getSummaryEndpointDatabaseTime().get(entry
+                            .getKey()) + databaseTime.get(entry.getKey()));
+                    apiTime.put(entry.getKey(), clientTestDTO.getSummaryApiTime().get(entry.getKey())
+                            + apiTime.get(entry.getKey()));
                 }
             }
         }
@@ -146,7 +144,8 @@ public class TestController {
             long averageDBTime = databaseTime.get(entry.getKey()) / numberOR;
             long averageApiTime = apiTime.get(entry.getKey()) / numberOR;
             Endpoint endpoint = endpointRepository.findByEndpoint(entry.getKey()).get();
-            Test test = new Test(0, endpoint, name, numberOR, (int) runTestDTO.getNumberOfUsers(), averageDBTime, averageApiTime, averageAppTime);
+            Test test = new Test(0, endpoint, name, numberOR,
+                    (int) runTestDTO.getNumberOfUsers(), averageDBTime, averageApiTime, averageAppTime);
             testRepository.save(test);
         }
 
