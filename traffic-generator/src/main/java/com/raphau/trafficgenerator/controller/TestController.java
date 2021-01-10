@@ -106,14 +106,15 @@ public class TestController {
             Thread.sleep(1000);
             time -= 1000;
             log.info(time/1000 + "s left");
-            if(time <= 5000){
+            if(time <= 30000){
                 asyncService.setEndWork(true);
-                Thread.sleep(5000);
+                Thread.sleep(30000);
                 break;
             }
         };
         log.info("Koniec");
 
+        System.out.println(clientTestDTOList.size());
 
         for(ClientTestDTO clientTestDTO: clientTestDTOList){
             for(Map.Entry<String, Integer> entry : clientTestDTO.getNumberOfRequests().entrySet()){
