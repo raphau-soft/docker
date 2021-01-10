@@ -167,7 +167,7 @@ public class TradingThread {
         }
         Optional<Stock> stockOptional = stockRepository.findByCompanyAndUser(companyOptional.get(), userOpt.get());
         if(!stockOptional.isPresent()){
-            throw new StockNotFoundException("User " + userOpt.get().getUsername() + " doesn't have stocks of " + companyOptional.get().getName());
+            return;
         }
         Stock stock = stockOptional.get();
         if(sellOfferDTO.getAmount() > stock.getAmount() || sellOfferDTO.getAmount() <= 0){

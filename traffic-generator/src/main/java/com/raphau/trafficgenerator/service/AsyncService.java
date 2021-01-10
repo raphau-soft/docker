@@ -131,7 +131,9 @@ public class AsyncService {
     public void deleteSellOffer(String jwt, ClientTestDTO clientTestDTO) throws JSONException {
         JSONObject jsonObject;
         Gson gson = new Gson();
-        jsonObject = new JSONObject(getSellOffers(jwt, clientTestDTO));
+        String temp = getSellOffers(jwt, clientTestDTO);
+        if(temp == null) return;
+        jsonObject = new JSONObject(temp);
         Type sellOfferListType = new TypeToken<ArrayList<SellOffer>>(){}.getType();
         List<SellOffer> sellOffers = gson.fromJson(jsonObject.get("sellOffers").toString(), sellOfferListType);
         if(sellOffers.size() == 0) return;
@@ -151,7 +153,9 @@ public class AsyncService {
     public void deleteBuyOffer(String jwt, ClientTestDTO clientTestDTO) throws JSONException {
         JSONObject jsonObject;
         Gson gson = new Gson();
-        jsonObject = new JSONObject(getBuyOffers(jwt, clientTestDTO));
+        String temp = getBuyOffers(jwt, clientTestDTO);
+        if(temp == null) return;
+        jsonObject = new JSONObject();
         Type buyOfferListType = new TypeToken<ArrayList<BuyOffer>>(){}.getType();
         List<BuyOffer> buyOffers = gson.fromJson(jsonObject.get("buyOffers").toString(), buyOfferListType);
         if(buyOffers.size() == 0) return;
@@ -250,11 +254,14 @@ public class AsyncService {
             ////log.info("Error " + e);
         }
         apiTime = System.currentTimeMillis() - apiTime;
-        assert jsonResponse != null;
-        jsonObject = new JSONObject((String) jsonResponse.getBody());
-        TestDetailsDTO testDetailsDTO = gson.fromJson(jsonObject.get("testDetails").toString(), TestDetailsDTO.class);
-        clientTestDTO.addTestDetails(USER_BUYOFFERS, testDetailsDTO, apiTime);
-        return (String) jsonResponse.getBody();
+        String response = null;
+        if(jsonResponse != null) {
+            response = (String) jsonResponse.getBody();
+            jsonObject = new JSONObject(response);
+            TestDetailsDTO testDetailsDTO = gson.fromJson(jsonObject.get("testDetails").toString(), TestDetailsDTO.class);
+            clientTestDTO.addTestDetails(USER_BUYOFFERS, testDetailsDTO, apiTime);
+        }
+        return response;
     }
 
     private String getSellOffers(String jwt, ClientTestDTO clientTestDTO) throws JSONException {
@@ -274,11 +281,14 @@ public class AsyncService {
             ////log.info("Error " + e);
         }
         apiTime = System.currentTimeMillis() - apiTime;
-        assert jsonResponse != null;
-        jsonObject = new JSONObject((String) jsonResponse.getBody());
-        TestDetailsDTO testDetailsDTO = gson.fromJson(jsonObject.get("testDetails").toString(), TestDetailsDTO.class);
-        clientTestDTO.addTestDetails(USER_SELLOFFERS, testDetailsDTO, apiTime);
-        return (String) jsonResponse.getBody();
+        String response = null;
+        if(jsonResponse != null) {
+            response = (String) jsonResponse.getBody();
+            jsonObject = new JSONObject(response);
+            TestDetailsDTO testDetailsDTO = gson.fromJson(jsonObject.get("testDetails").toString(), TestDetailsDTO.class);
+            clientTestDTO.addTestDetails(USER_SELLOFFERS, testDetailsDTO, apiTime);
+        }
+        return response;
     }
 
     private String getResources(String jwt, ClientTestDTO clientTestDTO) throws JSONException {
