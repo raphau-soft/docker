@@ -155,10 +155,12 @@ public class AsyncService {
         Gson gson = new Gson();
         String temp = getBuyOffers(jwt, clientTestDTO);
         if(temp == null) return;
-        if(temp.contains(":[]")) return;
         jsonObject = new JSONObject();
         Type buyOfferListType = new TypeToken<ArrayList<BuyOffer>>(){}.getType();
-        List<BuyOffer> buyOffers = gson.fromJson(jsonObject.get("buyOffers").toString(), buyOfferListType);
+        List<BuyOffer> buyOffers;
+        if(jsonObject.has("buyOffers")) {
+            buyOffers = gson.fromJson(jsonObject.get("buyOffers").toString(), buyOfferListType);
+        } else return;
         if(buyOffers.size() == 0) return;
         headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
