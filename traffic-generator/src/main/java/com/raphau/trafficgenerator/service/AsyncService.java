@@ -413,7 +413,9 @@ public class AsyncService {
 
     private void strategyAddBuyOffer(String jwt, int strategy, ClientTestDTO clientTestDTO) throws JSONException, JsonProcessingException {
         Gson gson = new Gson();
-        JSONObject jsonObject = new JSONObject(getUser(jwt, clientTestDTO));
+        String temp = getUser(jwt, clientTestDTO);
+        if(temp == null) return;
+        JSONObject jsonObject = new JSONObject(temp);
         User user = gson.fromJson(jsonObject.get("user").toString(), User.class);
         jsonObject = new JSONObject(getCompanies(jwt, clientTestDTO));
         Type companyListType = new TypeToken<ArrayList<Company>>(){}.getType();
