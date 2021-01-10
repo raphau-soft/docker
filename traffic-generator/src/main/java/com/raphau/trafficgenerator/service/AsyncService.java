@@ -157,6 +157,7 @@ public class AsyncService {
         if(temp == null) return;
         jsonObject = new JSONObject();
         Type buyOfferListType = new TypeToken<ArrayList<BuyOffer>>(){}.getType();
+        System.out.println(temp);
         List<BuyOffer> buyOffers = gson.fromJson(jsonObject.get("buyOffers").toString(), buyOfferListType);
         if(buyOffers.size() == 0) return;
         headers = new HttpHeaders();

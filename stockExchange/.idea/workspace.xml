@@ -25,19 +25,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e28b238c-1083-4e88-844f-624a630c7d70" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/raphau/springboot/stockExchange/service/TradingThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/raphau/springboot/stockExchange/service/TradingThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/stockexchange-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/stockexchange-0.0.1-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/stockexchange-0.0.1-SNAPSHOT.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/target/stockexchange-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../traffic-generator/src/main/java/com/raphau/trafficgenerator/service/AsyncService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../traffic-generator/src/main/java/com/raphau/trafficgenerator/service/AsyncService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../traffic-generator/target/classes/com/raphau/trafficgenerator/service/AsyncService$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/../traffic-generator/target/classes/com/raphau/trafficgenerator/service/AsyncService$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../traffic-generator/target/classes/com/raphau/trafficgenerator/service/AsyncService$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/../traffic-generator/target/classes/com/raphau/trafficgenerator/service/AsyncService$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../traffic-generator/target/classes/com/raphau/trafficgenerator/service/AsyncService$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/../traffic-generator/target/classes/com/raphau/trafficgenerator/service/AsyncService$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../traffic-generator/target/classes/com/raphau/trafficgenerator/service/AsyncService$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/../traffic-generator/target/classes/com/raphau/trafficgenerator/service/AsyncService$5.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../traffic-generator/target/classes/com/raphau/trafficgenerator/service/AsyncService$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/../traffic-generator/target/classes/com/raphau/trafficgenerator/service/AsyncService$6.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../traffic-generator/target/classes/com/raphau/trafficgenerator/service/AsyncService$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/../traffic-generator/target/classes/com/raphau/trafficgenerator/service/AsyncService$7.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../traffic-generator/target/classes/com/raphau/trafficgenerator/service/AsyncService.class" beforeDir="false" afterPath="$PROJECT_DIR$/../traffic-generator/target/classes/com/raphau/trafficgenerator/service/AsyncService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../traffic-generator/target/traffic-generator-0.0.1-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../traffic-generator/target/traffic-generator-0.0.1-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../traffic-generator/target/traffic-generator-0.0.1-SNAPSHOT.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/../traffic-generator/target/traffic-generator-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -313,6 +301,8 @@
       <workItem from="1609698897597" duration="1245000" />
       <workItem from="1609942497222" duration="85000" />
       <workItem from="1610309163681" duration="153000" />
+      <workItem from="1610309587426" duration="8000" />
+      <workItem from="1610309733270" duration="53000" />
     </task>
     <servers />
   </component>
