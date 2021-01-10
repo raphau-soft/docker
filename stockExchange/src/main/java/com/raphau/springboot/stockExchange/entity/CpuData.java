@@ -4,15 +4,14 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name="cpu_data", schema="traffic_generator")
+@Table(name="cpu_data", schema="stock_exchange")
 public class CpuData implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private int id;
-
-
+    
     @Column(name = "name")
     private String name;
 

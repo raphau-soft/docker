@@ -67,8 +67,17 @@ public class AsyncService {
                          RunTestDTO runTestDTO) throws JSONException,
             JsonProcessingException, InterruptedException {
         int requestsNumber = 0;
+        //
+        Gson gson = new Gson();
+        JSONObject jsonObject;
         ClientTestDTO clientTestDTO = new ClientTestDTO();
-        createCompany(userLogin.getJwt(), clientTestDTO);
+        String resources = getResources(userLogin.getJwt(), clientTestDTO);
+        jsonObject = new JSONObject(resources);
+        Type stockListType = new TypeToken<ArrayList<Stock>>(){}.getType();
+        List<Stock> stocks = gson.fromJson(jsonObject.get("stock").toString(), stockListType);
+        //
+        if(stocks.isEmpty())
+            createCompany(userLogin.getJwt(), clientTestDTO);
         double random = Math.random();
         if (random <= runTestDTO.getStockPlay()) {
             for(;;) {

@@ -26,6 +26,8 @@
   <component name="ChangeListManager">
     <list default="true" id="e28b238c-1083-4e88-844f-624a630c7d70" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/raphau/springboot/stockExchange/entity/CpuData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/raphau/springboot/stockExchange/entity/CpuData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/raphau/springboot/stockExchange/service/TradingThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/raphau/springboot/stockExchange/service/TradingThread.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -297,6 +299,9 @@
       <workItem from="1608215769421" duration="365000" />
       <workItem from="1608216287085" duration="2680000" />
       <workItem from="1608633569345" duration="22000" />
+      <workItem from="1609237891786" duration="2551000" />
+      <workItem from="1609698897597" duration="1245000" />
+      <workItem from="1609942497222" duration="85000" />
     </task>
     <servers />
   </component>

@@ -253,11 +253,9 @@ public class TradingThread {
                 } catch (Exception e) {
                     value = e;
                 }
-
-                CpuData cpuData = new CpuData(0, name, System.currentTimeMillis(), (Double) value);
-
+                CpuData cpuData = new CpuData(0, name,
+                        System.currentTimeMillis(), (Double) value);
                 cpuDataRepository.save(cpuData);
-
             }
         }
         test.setApplicationTime(System.currentTimeMillis() - appTime);
