@@ -438,6 +438,7 @@ public class AsyncService {
                 Type stockRateListType = new TypeToken<ArrayList<StockRate>>(){}.getType();
                 List<StockRate> stockRates = gson.fromJson(jsonObject.get("stockRate")
                         .toString(), stockRateListType);
+                if(stockRates.size() == 0) return;
                 int amountOfCompanies = Math.abs(new Random().nextInt() % (stockRates.size() / 3)) + 1;
                 for(int i = 0; i < amountOfCompanies; i++){
                     int companyNum = Math.abs(new Random().nextInt() % stockRates.size());
@@ -449,7 +450,9 @@ public class AsyncService {
                     if(amount == 0) amount = 1;
                     createBuyOffer(jwt, company.getId(), amount, price, clientTestDTO);
                     stockRates.remove(companyNum);
+                    if(endWork) return;
                     Thread.sleep(timeBetween);
+                    if(endWork) return;
                 }
                 break;
         }
@@ -479,7 +482,7 @@ public class AsyncService {
                 double price = Math.random() % 100.0 + 1;
                 price = round(price, 2);
                 int amount = (int) Math.round(Math.random()
-                        * 100.f % (stocks.get(stockNum).getAmount())) + 1;
+                        * 100.f % (stocks.get(stockNum).getAmount()));
                 int companyId = stocks.get(stockNum).getCompany().getId();
                 createSellOffer(jwt, companyId, amount, price, clientTestDTO);
                 break;
@@ -503,11 +506,13 @@ public class AsyncService {
                     price = round((Math.abs(new Random().nextDouble()) % (rate * 0.3)
                             + rate * 0.8), 2);
                     amount = (int) Math.round(Math.random() * 100.f % (stocks.get(stockNum)
-                            .getAmount())) - 1;
+                            .getAmount()));
                     if(amount <= 0) amount = 1;
                     createSellOffer(jwt, company.getId(), amount, price, clientTestDTO);
                     stocks.remove(stockNum);
+                    if(endWork) return;
                     Thread.sleep(timeBetween);
+                    if(endWork) return;
                 }
                 break;
         }
