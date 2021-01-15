@@ -438,7 +438,7 @@ public class AsyncService {
                 Type stockRateListType = new TypeToken<ArrayList<StockRate>>(){}.getType();
                 List<StockRate> stockRates = gson.fromJson(jsonObject.get("stockRate")
                         .toString(), stockRateListType);
-                if(stockRates.size() == 0) return;
+                if(stockRates.size() / 3 == 0) return;
                 int amountOfCompanies = Math.abs(new Random().nextInt() % (stockRates.size() / 3)) + 1;
                 for(int i = 0; i < amountOfCompanies; i++){
                     int companyNum = Math.abs(new Random().nextInt() % stockRates.size());
