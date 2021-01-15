@@ -49,7 +49,7 @@ public class AsyncService {
     private final String api = "http://stock-back:8080/";
     private boolean endWork = false;
     // private final String USER_LOGIN = "user/login";
-
+    private long timeBetween = 0;
     public void setEndWork(boolean endWork){
         this.endWork = endWork;
     }
@@ -67,7 +67,7 @@ public class AsyncService {
                          RunTestDTO runTestDTO) throws JSONException,
             JsonProcessingException, InterruptedException {
         int requestsNumber = 0;
-        //
+        timeBetween = runTestDTO.getTimeBetweenRequests();
         Gson gson = new Gson();
         JSONObject jsonObject;
         ClientTestDTO clientTestDTO = new ClientTestDTO();
@@ -411,7 +411,7 @@ public class AsyncService {
         return (String) jsonResponse.getBody();
     }
 
-    private void strategyAddBuyOffer(String jwt, int strategy, ClientTestDTO clientTestDTO) throws JSONException, JsonProcessingException {
+    private void strategyAddBuyOffer(String jwt, int strategy, ClientTestDTO clientTestDTO) throws JSONException, JsonProcessingException, InterruptedException {
         Gson gson = new Gson();
         String temp = getUser(jwt, clientTestDTO);
         if(temp == null) return;
@@ -449,6 +449,7 @@ public class AsyncService {
                     if(amount == 0) amount = 1;
                     createBuyOffer(jwt, company.getId(), amount, price, clientTestDTO);
                     stockRates.remove(companyNum);
+                    Thread.sleep(timeBetween);
                 }
                 break;
         }
@@ -462,7 +463,7 @@ public class AsyncService {
         return bd.doubleValue();
     }
 
-    private void strategyAddSellOffer(String jwt, int strategy, ClientTestDTO clientTestDTO) throws JSONException, JsonProcessingException {
+    private void strategyAddSellOffer(String jwt, int strategy, ClientTestDTO clientTestDTO) throws JSONException, JsonProcessingException, InterruptedException {
         Gson gson = new Gson();
         String resources = getResources(jwt, clientTestDTO);
         if(resources == null) return;
@@ -506,6 +507,7 @@ public class AsyncService {
                     if(amount == 0) amount = 1;
                     createSellOffer(jwt, company.getId(), amount, price, clientTestDTO);
                     stocks.remove(stockNum);
+                    Thread.sleep(timeBetween);
                 }
                 break;
         }
