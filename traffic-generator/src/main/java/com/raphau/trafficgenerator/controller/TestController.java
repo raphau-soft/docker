@@ -75,7 +75,7 @@ public class TestController {
         }
 
         for(int i = 0; i < runTestDTO.getNumberOfUsers(); i++){
-            Thread.sleep(10);
+            Thread.sleep(1000);
             asyncService.runTests(userLogins.get(i), clientTestDTOList, runTestDTO);
         }
 //        MBeanServer mbs    = ManagementFactory.getPlatformMBeanServer();

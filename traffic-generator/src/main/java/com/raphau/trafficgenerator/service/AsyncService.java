@@ -503,8 +503,8 @@ public class AsyncService {
                     price = round((Math.abs(new Random().nextDouble()) % (rate * 0.3)
                             + rate * 0.8), 2);
                     amount = (int) Math.round(Math.random() * 100.f % (stocks.get(stockNum)
-                            .getAmount()));
-                    if(amount == 0) amount = 1;
+                            .getAmount())) - 1;
+                    if(amount <= 0) amount = 1;
                     createSellOffer(jwt, company.getId(), amount, price, clientTestDTO);
                     stocks.remove(stockNum);
                     Thread.sleep(timeBetween);
