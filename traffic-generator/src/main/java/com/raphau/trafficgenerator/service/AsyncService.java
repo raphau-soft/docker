@@ -411,6 +411,60 @@ public class AsyncService {
         return (String) jsonResponse.getBody();
     }
 
+    private void strategyAddSellOffer(String jwt, int strategy, ClientTestDTO clientTestDTO) throws JSONException, JsonProcessingException, InterruptedException {
+        Gson gson = new Gson();
+        String resources = getResources(jwt, clientTestDTO);
+        if(resources == null) return;
+        JSONObject jsonObject = new JSONObject(resources);
+        Type stockListType = new TypeToken<ArrayList<Stock>>(){}.getType();
+        List<Stock> stocks = gson.fromJson(jsonObject.get("stock").toString(), stockListType);
+        if(stocks.size() <= 0) return;
+        int stockNum;
+        switch(strategy){
+            case RAND_EXPENSIVE_ONE_COMP:
+                stockNum = Math.abs(new Random().nextInt()
+                        % stocks.size());
+                double price = Math.random() % 100.0 + 1;
+                price = round(price, 2);
+                int amount = (int) Math.round(Math.random()
+                        * 100.f % (stocks.get(stockNum).getAmount()));
+                int companyId = stocks.get(stockNum).getCompany().getId();
+                createSellOffer(jwt, companyId, amount, price, clientTestDTO);
+                break;
+            case RAND_RANDOM_MANY_COMP:
+                String stockR = getStockRates(jwt, clientTestDTO);
+                if(stockR == null) break;
+                jsonObject = new JSONObject(stockR);
+                Type stockRateListType = new TypeToken<ArrayList<StockRate>>(){}.getType();
+                List<StockRate> stockRates = gson.fromJson(jsonObject.get("stockRate")
+                        .toString(), stockRateListType);
+                int amountOfStocks = Math.abs(new Random().nextInt() % stocks.size())/3 + 1;
+                for(int i = 0; i < amountOfStocks; i++){
+                    stockNum = Math.abs(new Random().nextInt() % stocks.size());
+                    Stock stock = stocks.get(stockNum);
+                    Company company = stock.getCompany();
+                    StockRate stockRateTemp = new StockRate();
+                    stockRateTemp.setCompany(company);
+                    int stockRateNum = stockRates.indexOf(stockRateTemp);
+                    StockRate stockRate = stockRates.get(stockRateNum);
+                    double rate = stockRate.getRate();
+                    price = round((Math.abs(new Random().nextDouble()) % (rate * 0.3)
+                            + rate * 0.8), 2);
+                    amount = (int) Math.round(Math.random() * 100.f % (stocks.get(stockNum)
+                            .getAmount()));
+                    if(amount <= 0) amount = 1;
+                    createSellOffer(jwt, company.getId(), amount, price, clientTestDTO);
+                    stocks.remove(stockNum);
+                    if(endWork) return;
+                    Thread.sleep(timeBetween);
+                    if(endWork) return;
+                }
+                break;
+        }
+    }
+
+
+
     private void strategyAddBuyOffer(String jwt, int strategy, ClientTestDTO clientTestDTO) throws JSONException, JsonProcessingException, InterruptedException {
         Gson gson = new Gson();
         String temp = getUser(jwt, clientTestDTO);
@@ -466,57 +520,6 @@ public class AsyncService {
         return bd.doubleValue();
     }
 
-    private void strategyAddSellOffer(String jwt, int strategy, ClientTestDTO clientTestDTO) throws JSONException, JsonProcessingException, InterruptedException {
-        Gson gson = new Gson();
-        String resources = getResources(jwt, clientTestDTO);
-        if(resources == null) return;
-        JSONObject jsonObject = new JSONObject(resources);
-        Type stockListType = new TypeToken<ArrayList<Stock>>(){}.getType();
-        List<Stock> stocks = gson.fromJson(jsonObject.get("stock").toString(), stockListType);
-        if(stocks.size() <= 0) return;
-        int stockNum;
-        switch(strategy){
-            case RAND_EXPENSIVE_ONE_COMP:
-                stockNum = Math.abs(new Random().nextInt()
-                        % stocks.size());
-                double price = Math.random() % 100.0 + 1;
-                price = round(price, 2);
-                int amount = (int) Math.round(Math.random()
-                        * 100.f % (stocks.get(stockNum).getAmount()));
-                int companyId = stocks.get(stockNum).getCompany().getId();
-                createSellOffer(jwt, companyId, amount, price, clientTestDTO);
-                break;
-            case RAND_RANDOM_MANY_COMP:
-                String stockR = getStockRates(jwt, clientTestDTO);
-                if(stockR == null) break;
-                jsonObject = new JSONObject(stockR);
-                Type stockRateListType = new TypeToken<ArrayList<StockRate>>(){}.getType();
-                List<StockRate> stockRates = gson.fromJson(jsonObject.get("stockRate")
-                        .toString(), stockRateListType);
-                int amountOfStocks = Math.abs(new Random().nextInt() % stocks.size())/3 + 1;
-                for(int i = 0; i < amountOfStocks; i++){
-                    stockNum = Math.abs(new Random().nextInt() % stocks.size());
-                    Stock stock = stocks.get(stockNum);
-                    Company company = stock.getCompany();
-                    StockRate stockRateTemp = new StockRate();
-                    stockRateTemp.setCompany(company);
-                    int stockRateNum = stockRates.indexOf(stockRateTemp);
-                    StockRate stockRate = stockRates.get(stockRateNum);
-                    double rate = stockRate.getRate();
-                    price = round((Math.abs(new Random().nextDouble()) % (rate * 0.3)
-                            + rate * 0.8), 2);
-                    amount = (int) Math.round(Math.random() * 100.f % (stocks.get(stockNum)
-                            .getAmount()));
-                    if(amount <= 0) amount = 1;
-                    createSellOffer(jwt, company.getId(), amount, price, clientTestDTO);
-                    stocks.remove(stockNum);
-                    if(endWork) return;
-                    Thread.sleep(timeBetween);
-                    if(endWork) return;
-                }
-                break;
-        }
-    }
 
     private void createBuyOffer(String jwt, int companyId, int amount, double price, ClientTestDTO clientTestDTO) throws JSONException {
         headers = new HttpHeaders();
